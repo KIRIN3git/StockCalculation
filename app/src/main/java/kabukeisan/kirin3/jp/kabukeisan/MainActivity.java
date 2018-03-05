@@ -2,6 +2,8 @@ package kabukeisan.kirin3.jp.kabukeisan;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -24,10 +26,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mEditMeigara = (EditText) findViewById(R.id.editShutokuKabuka);
+        mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuka = (EditText) findViewById(R.id.editShutokuKabuka);
         mEditShutokuKabusuu = (EditText) findViewById(R.id.editShutokuKabusuu);
         mEditShutokuKingaku = (EditText) findViewById(R.id.editShutokuKingaku);
+
+        mEditMeigara.addTextChangedListener(new GenericTextWatcher(mEditMeigara));
+        mEditShutokuKabuka.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuka));
+        mEditShutokuKabusuu.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabusuu));
+        mEditShutokuKingaku.addTextChangedListener(new GenericTextWatcher(mEditShutokuKingaku));
+
 
         mNumPickerKabuka = (CustomNumberPicker) findViewById(R.id.numPickerKabuka);
         mNumPickerNensuu = (CustomNumberPicker) findViewById(R.id.numPickerNensuu);
@@ -37,7 +45,9 @@ public class MainActivity extends AppCompatActivity {
         mTextGoukeiSoneki = (TextView) findViewById(R.id.textGoukeiSoneki);
         mTextKingaku = (TextView) findViewById(R.id.textKingaku);
 
-        getChangeEdit();
+        Log.w("DEBUG_DATA", "aaaaaaaaaaaaa1 " );
+
+        //getChangeEdit();
         getChangeNumberPicker();
     }
 
@@ -47,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         mEditMeigara.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.w("DEBUG_DATA", "bbbbbbbbb " + mEditMeigara.getText().toString());
+                Log.w("DEBUG_DATA", "mEditMeigara.setOnKeyListener onKey " + mEditMeigara.getText().toString());
                 return false;
             }
         });
@@ -56,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mEditShutokuKabuka.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.w("DEBUG_DATA", "bbbbbbbbb1 " + mEditShutokuKabuka.getText().toString());
+                Log.w("DEBUG_DATA", "mEditMeigara.setOnKeyListener onKey " + mEditShutokuKabuka.getText().toString());
 
                 setNumPickerKabuka(mEditShutokuKabuka.getText().toString());
 
@@ -68,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
         mEditShutokuKabusuu.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
+                Log.w("DEBUG_DATA", "mEditShutokuKabusuu.setOnKeyListener onKey " + mEditShutokuKabusuu.getText().toString());
+
                 Log.w("DEBUG_DATA", "bbbbbbbbb2 " + mEditShutokuKabuka.getText().toString());
                 Log.w("DEBUG_DATA", "bbbbbbbbb2 " + mEditShutokuKabusuu.getText().toString());
 
@@ -81,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         mEditShutokuKingaku.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
-                Log.w("DEBUG_DATA", "bbbbbbbbb " + mEditShutokuKingaku.getText().toString());
+                Log.w("DEBUG_DATA", "mEditShutokuKingaku.setOnKeyListener onKey " + mEditShutokuKingaku.getText().toString());
 
                 setShutokuKabusuu(mEditShutokuKabuka.getText().toString(),mEditShutokuKingaku.getText().toString());
                 return false;
@@ -125,12 +137,16 @@ public class MainActivity extends AppCompatActivity {
      * @param kabusuu
      */
     public void setShutokuKingaku(String kabuka, String kabusuu){
+        Log.w( "DEBUG_DATA", "setShutokuKingaku" );
         Long kingaku;
+
+        Log.w( "DEBUG_DATA", "kabuka = " + kabuka );
+        Log.w( "DEBUG_DATA", "kabusuu = " + kabusuu );
 
         if(kabuka.length() < 1 || kabusuu.length() < 1) return;
 
         kingaku = Long.parseLong(kabuka) * Long.parseLong(kabusuu);
-
+        Log.w( "DEBUG_DATA", "setShutokuKingaku2" );
         mEditShutokuKingaku.setText(String.valueOf(kingaku));
     }
 
@@ -167,5 +183,44 @@ public class MainActivity extends AppCompatActivity {
 
         // 初期値設定
         mNumPickerKabuka.setValue(Integer.parseInt(kabuka) - (Integer.parseInt(kabuka) / NUMBER_PICKER_KABUKA_RANGE));
+    }
+
+
+    // EidtTextのイベントを取得
+    private class GenericTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private GenericTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+        }
+
+        public void afterTextChanged(Editable editable) {
+
+            switch (view.getId()) {
+                case R.id.editMeigara:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editMeigara" );
+
+                    break;
+                case R.id.editShutokuKabuka:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuka" );
+                    setNumPickerKabuka(mEditShutokuKabuka.getText().toString());
+                    break;
+                case R.id.editShutokuKabusuu:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabusuu" );
+                    setShutokuKingaku(mEditShutokuKabuka.getText().toString(),mEditShutokuKabusuu.getText().toString());
+                    break;
+                case R.id.editShutokuKingaku:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKingaku" );
+                    //setShutokuKabusuu(mEditShutokuKabuka.getText().toString(),mEditShutokuKingaku.getText().toString());
+                    break;
+            }
+        }
     }
 }
