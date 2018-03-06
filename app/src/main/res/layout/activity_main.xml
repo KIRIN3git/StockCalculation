@@ -126,6 +126,8 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -138,8 +140,8 @@
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:text="取得金額"/>
-            <EditText
-                android:id="@+id/editShutokuKingaku"
+            <TextView
+                android:id="@+id/textShutokuKingaku"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:gravity="center"
@@ -176,6 +178,7 @@
 -->
         <View
             android:layout_width="fill_parent"
+            android:layout_marginTop="10dp"
             android:layout_height="1dp"
             android:background="@android:color/darker_gray"/>
 
@@ -189,23 +192,67 @@
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
+                <TextView
+                    android:text="予想株価"
+                    android:layout_gravity="center"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center">
-                    <TextView
-                        android:text="株価"
-                        android:textSize="20sp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+
                     <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
-                        android:id="@+id/numPickerKabuka"
+                        android:id="@+id/numPickerKabuka5"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:background="@drawable/drawablenp"
+                        custom:max="9"
+                        custom:min="0"
+                        android:theme="@style/AlertDialog.AppCompat.Light"/>
+                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                        android:id="@+id/numPickerKabuka4"
+                        xmlns:custom="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/drawablenp"
+                        custom:max="9"
+                        custom:min="0"
+                        android:theme="@style/AlertDialog.AppCompat.Light"/>
+                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                        android:id="@+id/numPickerKabuka3"
+                        xmlns:custom="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/drawablenp"
+                        custom:max="9"
+                        custom:min="0"
+                        android:theme="@style/AlertDialog.AppCompat.Light"/>
+                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                        android:id="@+id/numPickerKabuka2"
+                        xmlns:custom="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/drawablenp"
+                        custom:max="9"
+                        custom:min="0"
+                        android:theme="@style/AlertDialog.AppCompat.Light"/>
+                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                        android:id="@+id/numPickerKabuka1"
+                        xmlns:custom="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/drawablenp"
+                        custom:max="9"
+                        custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
                 </LinearLayout>
 
@@ -279,6 +326,9 @@
        </LinearLayout>
 
 
+
+
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -291,9 +341,9 @@
                 android:textSize="20sp"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="合計損益"/>
+                android:text="予想金額"/>
             <TextView
-                android:id="@+id/textGoukeiSoneki"
+                android:id="@+id/textYosouKingaku"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -313,9 +363,9 @@
                 android:textSize="20sp"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
-                android:text="金額"/>
+                android:text="源泉徴収"/>
             <TextView
-                android:id="@+id/textKingaku"
+                android:id="@+id/textGensenChoshuu"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
