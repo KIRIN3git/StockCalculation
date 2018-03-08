@@ -5,23 +5,20 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
-    public EditText mEditMeigara, mEditShutokuKabuka, mEditShutokuKabusuu;
-    private TextView mTextShutokuKingaku, mTextSoneki, mTextYosouKingaku, mTextGensenChouShuu;
-
-    private CustomNumberPicker mNumPickerKabuka1,mNumPickerKabuka2,mNumPickerKabuka3,mNumPickerKabuka4,mNumPickerKabuka5;
-
-    public Integer YosouKabuka = 0;
-
-    // 株価ナンバーピッカーの表示範囲最大倍率(*4)、最小倍率(/4)
-    final Integer NUMBER_PICKER_KABUKA_RANGE = 4;
+    public EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
+    private TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
+    private CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
+    private Button mButtonKabuRese;
+    public Integer mShutokuKabuKa,mShutokuKabuSuu,mYosouKabuKa;
+    public Long mShutokuKingaku,mYosouSoneki,mYosouKingaku,mGensenChoshuu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,58 +26,80 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
-        mEditShutokuKabuka = (EditText) findViewById(R.id.editShutokuKabuka);
-        mEditShutokuKabusuu = (EditText) findViewById(R.id.editShutokuKabusuu);
+        mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
+        mEditShutokuKabuSuu = (EditText) findViewById(R.id.editShutokuKabuSuu);
 
         mEditMeigara.addTextChangedListener(new GenericTextWatcher(mEditMeigara));
-        mEditShutokuKabuka.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuka));
-        mEditShutokuKabusuu.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabusuu));
+        mEditShutokuKabuKa.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuKa));
+        mEditShutokuKabuSuu.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuSuu));
 
-
-        mNumPickerKabuka1 = (CustomNumberPicker) findViewById(R.id.numPickerKabuka1);
-        mNumPickerKabuka2 = (CustomNumberPicker) findViewById(R.id.numPickerKabuka2);
-        mNumPickerKabuka3 = (CustomNumberPicker) findViewById(R.id.numPickerKabuka3);
-        mNumPickerKabuka4 = (CustomNumberPicker) findViewById(R.id.numPickerKabuka4);
-        mNumPickerKabuka5 = (CustomNumberPicker) findViewById(R.id.numPickerKabuka5);
+        mNumPickerKabuKa1 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa1);
+        mNumPickerKabuKa2 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa2);
+        mNumPickerKabuKa3 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa3);
+        mNumPickerKabuKa4 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa4);
+        mNumPickerKabuKa5 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa5);
 
         mTextShutokuKingaku = (TextView) findViewById(R.id.textShutokuKingaku);
-        mTextSoneki = (TextView) findViewById(R.id.textSoneki);
+        mTextYosouSoneki = (TextView) findViewById(R.id.textYosouSoneki);
         mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingaku);
         mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuu);
 
-        Log.w("DEBUG_DATA", "aaaaaaaaaaaaa1 " );
+        mButtonKabuRese = (Button) findViewById(R.id.buttonYosouReset);
+
+        mButtonKabuRese.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                // 予想株価を取得株価にリセット
+                mYosouKabuKa = mShutokuKabuKa;
+                setNumPickerKabuKa(mYosouKabuKa);
+                setYosouAll();
+            }
+        });
 
         getChangeNumberPicker();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        mShutokuKabuKa = 0;
+        mShutokuKabuSuu = 0;
+        mShutokuKingaku = 0L;
+        mYosouKabuKa = 0;
+        mYosouSoneki = 0L;
+        mYosouKingaku = 0L;
+        mGensenChoshuu = 0L;
     }
 
     public void getChangeNumberPicker() {
 
         // ナンバーピッカーの変更を受け取るリスナー
-        mNumPickerKabuka1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mNumPickerKabuKa1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 exeChangeNumPicker(1,oldVal,newVal);
             }
         });
-        mNumPickerKabuka2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mNumPickerKabuKa2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 exeChangeNumPicker(2,oldVal,newVal);
             }
         });
-        mNumPickerKabuka3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mNumPickerKabuKa3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 exeChangeNumPicker(3,oldVal,newVal);
             }
         });
-        mNumPickerKabuka4.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mNumPickerKabuKa4.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 exeChangeNumPicker(4,oldVal,newVal);
             }
         });
-        mNumPickerKabuka5.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+        mNumPickerKabuKa5.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
                 exeChangeNumPicker(5,oldVal,newVal);
@@ -97,153 +116,122 @@ public class MainActivity extends AppCompatActivity {
      */
     public void exeChangeNumPicker(int no,int oldVal,int newVal ){
 
-        // ・変更時に現在の予想株価を変更
-        // 数字UP or 繰り上がり
-        /*
-        if(oldVal + 1 == newVal ||  oldVal == 9 && newVal == 0 ){
-            if( no == 1 ) YosouKabuka += 1;
-            else if( no == 2 ) YosouKabuka += 10;
-            else if( no == 3 ) YosouKabuka += 100;
-            else if( no == 4 ) YosouKabuka += 1000;
-            else if( no == 5 ) YosouKabuka += 10000;
-        }
-        // 数字DOWN
-        else{
-            if( no == 1 ) YosouKabuka -= 1;
-            else if( no == 2 ) YosouKabuka -= 10;
-            else if( no == 3 ) YosouKabuka -= 100;
-            else if( no == 4 ) YosouKabuka -= 1000;
-            else if( no == 5 ) YosouKabuka -= 10000;
-        }
-        */
+
+        int v1 = mNumPickerKabuKa1.getValue();
+        int v2 = mNumPickerKabuKa2.getValue();
+        int v3 = mNumPickerKabuKa3.getValue();
+        int v4 = mNumPickerKabuKa4.getValue();
+        int v5 = mNumPickerKabuKa5.getValue();
 
 
-        int v1 = mNumPickerKabuka1.getValue();
-        int v2 = mNumPickerKabuka2.getValue();
-        int v3 = mNumPickerKabuka3.getValue();
-        int v4 = mNumPickerKabuka4.getValue();
-        int v5 = mNumPickerKabuka5.getValue();
-
-
-        int bufYosouKabuka = v1 + v2 * 10 + v3 * 100 + v4 * 1000 + v5 * 10000;
+        int bufYosouKabuKa = v1 + v2 * 10 + v3 * 100 + v4 * 1000 + v5 * 10000;
 
         // 桁が繰り上がりしたら
         if( oldVal == 9 && newVal == 0 ) {
-            if (no == 1 && bufYosouKabuka < 99990) bufYosouKabuka += 10;
-            else if (no == 2 && bufYosouKabuka < 99900) bufYosouKabuka += 100;
-            else if (no == 3 && bufYosouKabuka < 99000) bufYosouKabuka += 1000;
-            else if (no == 4 && bufYosouKabuka < 90000) bufYosouKabuka += 10000;
-            setNumPickerKabuka(bufYosouKabuka); // 繰り上がり、下がりを反映させる
+            if (no == 1 && bufYosouKabuKa < 99990) bufYosouKabuKa += 10;
+            else if (no == 2 && bufYosouKabuKa < 99900) bufYosouKabuKa += 100;
+            else if (no == 3 && bufYosouKabuKa < 99000) bufYosouKabuKa += 1000;
+            else if (no == 4 && bufYosouKabuKa < 90000) bufYosouKabuKa += 10000;
+            setNumPickerKabuKa(bufYosouKabuKa); // 繰り上がり、下がりを反映させる
           }
         // 桁が繰り下がりしたら
         else if( oldVal == 0 && newVal == 9 ) {
-            if (no == 1 && bufYosouKabuka > 10 ) bufYosouKabuka -= 10;
-            else if (no == 2 && bufYosouKabuka > 100) bufYosouKabuka -= 100;
-            else if (no == 3 && bufYosouKabuka > 1000) bufYosouKabuka -= 1000;
-            else if (no == 4 && bufYosouKabuka > 10000) bufYosouKabuka -= 10000;
-            setNumPickerKabuka(bufYosouKabuka); // 繰り上がり、下がりを反映させる
+            if (no == 1 && bufYosouKabuKa > 10 ) bufYosouKabuKa -= 10;
+            else if (no == 2 && bufYosouKabuKa > 100) bufYosouKabuKa -= 100;
+            else if (no == 3 && bufYosouKabuKa > 1000) bufYosouKabuKa -= 1000;
+            else if (no == 4 && bufYosouKabuKa > 10000) bufYosouKabuKa -= 10000;
+            setNumPickerKabuKa(bufYosouKabuKa); // 繰り上がり、下がりを反映させる
         }
 
-        YosouKabuka = bufYosouKabuka;
+        mYosouKabuKa = bufYosouKabuKa;
 
-
-        Log.w( "DEBUG_DATA", "YosouKabuka = " + YosouKabuka );
-
-        // 株数を入力していなければ表示しない
-        if( mEditShutokuKabusuu.getText().toString() == null || mEditShutokuKabusuu.getText().toString().length() < 1 ) return;
-
-        // ( ナンバーピッカー株価（newVal + newVal/NUMBER_PICKER_KABUKA_RANGE） - 取得株価 ) * 取得株数
-        Integer shutokuKabuka = Integer.parseInt(mEditShutokuKabuka.getText().toString());
-        Integer editShutokuKabusuu = Integer.parseInt(mEditShutokuKabusuu.getText().toString());
-        Integer soneki = ( YosouKabuka - shutokuKabuka ) * editShutokuKabusuu;
-
-        mTextSoneki.setText(String.valueOf(soneki));
-
-        setYosouKingaku(YosouKabuka,mEditShutokuKabusuu.getText().toString());
+        setYosouAll();
     }
 
-    /**
-     * 取得株価、取得株数から取得金額を表示
-     *
-     * @param kabuka
-     * @param kabusuu
-     */
-    public void setShutokuKingaku(String kabuka, String kabusuu){
-        Long kingaku;
-
-        if(kabuka.length() < 1 || kabusuu.length() < 1) return;
-
-        kingaku = Long.parseLong(kabuka) * Long.parseLong(kabusuu);
-        mTextShutokuKingaku.setText(String.valueOf(kingaku));
-    }
 
     /**
      * 予想株価、取得株数から予想金額を表示
      *
-     * @param yosouKabuka
-     * @param kabusuu
      */
-    public void setYosouKingaku(int yosouKabuka, String kabusuu){
-        Long kingaku;
-        Long gensenchoushuu;
+    public void setYosouAll(){
 
-        if(yosouKabuka < 1 || kabusuu.length() < 1) return;
+        Log.w( "DEBUG_DATA", "setYosouAll" );
 
-        kingaku = yosouKabuka * Long.parseLong(kabusuu);
-        gensenchoushuu = kingaku / 80;
-        mTextYosouKingaku.setText(String.valueOf(kingaku));
-        mTextGensenChouShuu.setText(String.valueOf(gensenchoushuu));
+        long shutokuKabuKa,shutokuKabuSuu,yosouSoneki;
+        long gensenChoushuu,yosouKingaku;
+        
+        /*
+        // 株価を入力していなければ表示しない
+        if( ( mEditShutokuKabuKa.getText().toString() == null || mEditShutokuKabuKa.getText().toString().length() < 1 ) ||
+                ( mEditShutokuKabuSuu.getText().toString() == null || mEditShutokuKabuSuu.getText().toString().length() < 1 ) ){
+            mTextYosouSoneki.setText("0");
+            mTextYosouKingaku.setText("0");
+            mTextGensenChouShuu.setText("0");
+            return;
+        }
+        */
+
+        yosouSoneki = ( mYosouKabuKa - mShutokuKabuKa ) * mShutokuKabuSuu;
+        yosouKingaku = mYosouKabuKa * mShutokuKabuSuu;
+        gensenChoushuu = yosouSoneki * 20 / 100;
+
+        mTextYosouSoneki.setText(String.valueOf(yosouSoneki));
+        mTextYosouKingaku.setText(String.valueOf(yosouKingaku));
+        mTextGensenChouShuu.setText(String.valueOf(gensenChoushuu));
     }
 
     /**
-     * 取得株価、取得金額から取得株数を表示
-     *
-     * @param kabuka
-     * @param kingaku
+     * 取得株価、取得株数から取得金額を表示
      */
-    public void setShutokuKabusuu(String kabuka, String kingaku){
-        Integer kabusuu;
+    public void setShutokuKingaku(){
+        long kingaku;
 
-        if(kabuka.length() < 1 || kingaku.length() < 1) return;
-
-        kabusuu = Integer.parseInt(kingaku) / Integer.parseInt(kabuka);
-
-        mEditShutokuKabusuu.setText(String.valueOf(kabusuu));
+        kingaku = mShutokuKabuKa * mShutokuKabuSuu;
+        mTextShutokuKingaku.setText(String.valueOf(kingaku));
     }
 
+    
     /**
-     * 予想株価数から、予想株価ナンバーピッカーを設定
+     * 予想株価数から、予想株価ナンバーピッカーを初期設定
      *
-     * @param kabuka 設定株価
+     * @param KabuKa 設定株価
      */
-    public void setNumPickerKabuka(int kabuka){
+    public void setNumPickerKabuKa(int KabuKa){
 
-        int kabukaBuf;
+        int KabuKaBuf;
         int num1 = 0,num2 = 0,num3 = 0,num4 = 0,num5 = 0;
 
-        if(kabuka < 1) return;
+        if(KabuKa < 1){
+            mNumPickerKabuKa5.setValue(0);
+            mNumPickerKabuKa4.setValue(0);
+            mNumPickerKabuKa3.setValue(0);
+            mNumPickerKabuKa2.setValue(0);
+            mNumPickerKabuKa1.setValue(0);
 
-        kabukaBuf = kabuka;
+            return;
+        }
 
-        if( kabukaBuf >= 10000 ){
-            num5 = kabukaBuf / 10000;
-            kabukaBuf = kabukaBuf - ( num5 * 10000 );
+        KabuKaBuf = KabuKa;
+
+        if( KabuKaBuf >= 10000 ){
+            num5 = KabuKaBuf / 10000;
+            KabuKaBuf = KabuKaBuf - ( num5 * 10000 );
         }
-        if( kabukaBuf >= 1000 ){
-            num4 = kabukaBuf / 1000;
-            kabukaBuf = kabukaBuf - ( num4 * 1000 );
+        if( KabuKaBuf >= 1000 ){
+            num4 = KabuKaBuf / 1000;
+            KabuKaBuf = KabuKaBuf - ( num4 * 1000 );
         }
-        if( kabukaBuf >= 100 ){
-            num3 = kabukaBuf / 100;
-            kabukaBuf = kabukaBuf - ( num3 * 100 );
+        if( KabuKaBuf >= 100 ){
+            num3 = KabuKaBuf / 100;
+            KabuKaBuf = KabuKaBuf - ( num3 * 100 );
         }
-        if( kabukaBuf >= 10 ){
-            num2 = kabukaBuf / 10;
-            kabukaBuf = kabukaBuf - ( num2 * 10 );
+        if( KabuKaBuf >= 10 ){
+            num2 = KabuKaBuf / 10;
+            KabuKaBuf = KabuKaBuf - ( num2 * 10 );
         }
-        if( kabukaBuf >= 1 ){
-            num1 = kabukaBuf / 1;
-            kabukaBuf = kabukaBuf - ( num1 * 1 );
+        if( KabuKaBuf >= 1 ){
+            num1 = KabuKaBuf / 1;
+            KabuKaBuf = KabuKaBuf - ( num1 * 1 );
         }
 
         Log.w( "DEBUG_DATA", "num5 = " + num5 );
@@ -252,14 +240,14 @@ public class MainActivity extends AppCompatActivity {
         Log.w( "DEBUG_DATA", "num2 = " + num2 );
         Log.w( "DEBUG_DATA", "num1 = " + num1 );
 
-        mNumPickerKabuka5.setValue(num5);
-        mNumPickerKabuka4.setValue(num4);
-        mNumPickerKabuka3.setValue(num3);
-        mNumPickerKabuka2.setValue(num2);
-        mNumPickerKabuka1.setValue(num1);
+        mNumPickerKabuKa5.setValue(num5);
+        mNumPickerKabuKa4.setValue(num4);
+        mNumPickerKabuKa3.setValue(num3);
+        mNumPickerKabuKa2.setValue(num2);
+        mNumPickerKabuKa1.setValue(num1);
 
     }
-
+    
 
     // EidtTextのイベントを取得
     public class GenericTextWatcher implements TextWatcher {
@@ -276,6 +264,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
+        // EditTextが1文字編集されるごとに呼び出される
         public void afterTextChanged(Editable editable) {
 
             switch (view.getId()) {
@@ -283,14 +272,31 @@ public class MainActivity extends AppCompatActivity {
                     Log.w( "DEBUG_DATA", "afterTextChanged editMeigara" );
 
                     break;
-                case R.id.editShutokuKabuka:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuka" );
-                    YosouKabuka = Integer.parseInt(mEditShutokuKabuka.getText().toString());
-                    setNumPickerKabuka(YosouKabuka);
+                case R.id.editShutokuKabuKa:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuKa" );
+                    if( mEditShutokuKabuKa.getText().toString() !=null && mEditShutokuKabuKa.getText().toString().length() > 0 ) {
+                        mShutokuKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
+                        // 予想初期値セット
+                        mYosouKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
+                        Log.w( "DEBUG_DATA", "aaaaaaaaa" );
+                        setNumPickerKabuKa(mYosouKabuKa);
+                    }
+                    else{
+                        mShutokuKabuKa = 0;
+                        mYosouKabuKa = 0;
+                        setYosouAll();
+                    }
+
+                    setShutokuKingaku();
                     break;
-                case R.id.editShutokuKabusuu:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabusuu" );
-                    setShutokuKingaku(mEditShutokuKabuka.getText().toString(),mEditShutokuKabusuu.getText().toString());
+                case R.id.editShutokuKabuSuu:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuSuu" );
+                    if( mEditShutokuKabuSuu.getText().toString() !=null && mEditShutokuKabuSuu.getText().toString().length() > 0 ) {
+                        mShutokuKabuSuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
+                    }
+                    else mShutokuKabuSuu = 0;
+                    setShutokuKingaku();
+                    setYosouAll();
                     break;
             }
         }

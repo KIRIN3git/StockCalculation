@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:text="取得株価"/>
             <EditText
-                android:id="@+id/editShutokuKabuka"
+                android:id="@+id/editShutokuKabuKa"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:gravity="center"
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:text="取得株数"/>
             <EditText
-                android:id="@+id/editShutokuKabusuu"
+                android:id="@+id/editShutokuKabuSuu"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 android:gravity="center"
@@ -187,17 +187,50 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
+
             <LinearLayout
                 android:orientation="vertical"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-                <TextView
-                    android:text="予想株価"
-                    android:layout_gravity="center"
-                    android:textSize="20sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+                        <TextView
+                            android:text="予想株価"
+                            android:layout_gravity="center"
+                            android:textSize="20sp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right">
+                        <Button
+                            android:id="@+id/buttonYosouReset"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="リセット"/>
+                    </LinearLayout>
+                </LinearLayout>
+
                 <LinearLayout
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
@@ -205,7 +238,7 @@
                     android:gravity="center">
 
                     <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
-                        android:id="@+id/numPickerKabuka5"
+                        android:id="@+id/numPickerKabuKa5"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -215,7 +248,7 @@
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
                     <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
-                        android:id="@+id/numPickerKabuka4"
+                        android:id="@+id/numPickerKabuKa4"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -225,7 +258,7 @@
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
                     <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
-                        android:id="@+id/numPickerKabuka3"
+                        android:id="@+id/numPickerKabuKa3"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -235,7 +268,7 @@
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
                     <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
-                        android:id="@+id/numPickerKabuka2"
+                        android:id="@+id/numPickerKabuKa2"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -245,7 +278,7 @@
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
                     <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
-                        android:id="@+id/numPickerKabuka1"
+                        android:id="@+id/numPickerKabuKa1"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -266,10 +299,10 @@
                         android:textSize="20sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="損益"/>
+                        android:text="予想損益"/>
                     <TextView
                         android:textSize="20sp"
-                        android:id="@+id/textSoneki"
+                        android:id="@+id/textYosouSoneki"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0"/>
