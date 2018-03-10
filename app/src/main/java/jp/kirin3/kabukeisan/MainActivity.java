@@ -180,7 +180,8 @@ public class MainActivity extends AppCompatActivity {
         if(gensenChoushuu < 0) gensenChoushuu = 0;
 
         mTextYosouSoneki.setText(costString(yosouSoneki));
-        if(yosouSoneki >= 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.red));
+        if(yosouSoneki == 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.gray));
+        else if(yosouSoneki >= 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.red));
         else mTextYosouSoneki.setTextColor(getResources().getColor(R.color.blue));
         mTextYosouKingaku.setText(costString(yosouKingaku));
         mTextGensenChouShuu.setText(costString(gensenChoushuu));
