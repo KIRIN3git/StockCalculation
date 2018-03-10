@@ -1,5 +1,6 @@
 package jp.kirin3.kabukeisan;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -10,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -174,10 +177,13 @@ public class MainActivity extends AppCompatActivity {
         yosouSoneki = ( mYosouKabuKa - mShutokuKabuKa ) * mShutokuKabuSuu;
         yosouKingaku = mYosouKabuKa * mShutokuKabuSuu;
         gensenChoushuu = yosouSoneki * 20 / 100;
+        if(gensenChoushuu < 0) gensenChoushuu = 0;
 
-        mTextYosouSoneki.setText(String.valueOf(yosouSoneki));
-        mTextYosouKingaku.setText(String.valueOf(yosouKingaku));
-        mTextGensenChouShuu.setText(String.valueOf(gensenChoushuu));
+        mTextYosouSoneki.setText(costString(yosouSoneki));
+        if(yosouSoneki >= 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.red));
+        else mTextYosouSoneki.setTextColor(getResources().getColor(R.color.blue));
+        mTextYosouKingaku.setText(costString(yosouKingaku));
+        mTextGensenChouShuu.setText(costString(gensenChoushuu));
     }
 
     /**
@@ -187,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
         long kingaku;
 
         kingaku = mShutokuKabuKa * mShutokuKabuSuu;
-        mTextShutokuKingaku.setText(String.valueOf(kingaku));
+        mTextShutokuKingaku.setText(costString(kingaku));
     }
 
     
@@ -301,4 +307,16 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * 金額表示
+     *
+     * @param cost 1円単位の金額
+     * @return 整形後の金額
+     */
+    public static String costString(long cost) {
+        DecimalFormat df1 = new DecimalFormat("###,###");
+        return "¥" + df1.format(cost);
+    }
+
 }
