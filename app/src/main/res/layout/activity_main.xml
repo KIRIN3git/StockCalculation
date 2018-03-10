@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="kabukeisan.kirin3.jp.kabukeisan.MainActivity">
+    tools:context="jp.kirin3.kabukeisan.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -237,7 +237,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center">
 
-                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                    <jp.kirin3.kabukeisan.CustomNumberPicker
                         android:id="@+id/numPickerKabuKa5"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
@@ -247,7 +247,7 @@
                         custom:max="9"
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
-                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                    <jp.kirin3.kabukeisan.CustomNumberPicker
                         android:id="@+id/numPickerKabuKa4"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
@@ -257,7 +257,7 @@
                         custom:max="9"
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
-                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                    <jp.kirin3.kabukeisan.CustomNumberPicker
                         android:id="@+id/numPickerKabuKa3"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
@@ -267,7 +267,7 @@
                         custom:max="9"
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
-                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                    <jp.kirin3.kabukeisan.CustomNumberPicker
                         android:id="@+id/numPickerKabuKa2"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
@@ -277,7 +277,7 @@
                         custom:max="9"
                         custom:min="0"
                         android:theme="@style/AlertDialog.AppCompat.Light"/>
-                    <kabukeisan.kirin3.jp.kabukeisan.CustomNumberPicker
+                    <jp.kirin3.kabukeisan.CustomNumberPicker
                         android:id="@+id/numPickerKabuKa1"
                         xmlns:custom="http://schemas.android.com/apk/res-auto"
                         android:layout_width="wrap_content"
