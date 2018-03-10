@@ -1,4 +1,4 @@
-package kabukeisan.kirin3.jp.kabukeisan;
+package jp.kirin3.kabukeisan;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
