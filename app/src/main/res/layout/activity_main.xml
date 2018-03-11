@@ -69,9 +69,9 @@
             <TextView
                 android:gravity="center"
                 android:textSize="20sp"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="銘柄"/>
+                android:text="　銘柄　"/>
             <EditText
                 android:id="@+id/editMeigara"
                 android:textStyle="bold"
@@ -91,7 +91,7 @@
             <TextView
                 android:gravity="center"
                 android:textSize="20sp"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="取得株価"/>
             <EditText
@@ -113,7 +113,7 @@
             <TextView
                 android:gravity="center"
                 android:textSize="20sp"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="取得株数"/>
             <EditText
@@ -132,12 +132,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
             <TextView
                 android:gravity="center"
                 android:textSize="20sp"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="取得金額"/>
             <TextView
@@ -227,6 +228,7 @@
                             android:id="@+id/buttonYosouReset"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginRight="15dp"
                             android:text="リセット"/>
                     </LinearLayout>
                 </LinearLayout>
@@ -317,7 +319,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:textSize="20sp"
-                        android:text="0"/>
+                        tools:text="0"/>
                 </LinearLayout>
 
             </LinearLayout>
@@ -340,7 +342,7 @@
             <TextView
                 android:gravity="center"
                 android:textSize="20sp"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="予想金額"/>
             <TextView
@@ -349,7 +351,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:text="0"/>
+                tools:text="0"/>
         </LinearLayout>
 
         <LinearLayout
@@ -362,7 +364,7 @@
             <TextView
                 android:gravity="center"
                 android:textSize="20sp"
-                android:layout_width="80dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="源泉徴収"/>
             <TextView
@@ -371,7 +373,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:text="0"/>
+                tools:text="0"/>
         </LinearLayout>
 
     </LinearLayout>
