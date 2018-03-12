@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
         long shutokuKabuKa,shutokuKabuSuu,yosouSoneki;
         long gensenChoushuu,yosouKingaku;
-        
+
         /*
         // 株価を入力していなければ表示しない
         if( ( mEditShutokuKabuKa.getText().toString() == null || mEditShutokuKabuKa.getText().toString().length() < 1 ) ||
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         mTextShutokuKingaku.setText(String.valueOf(kingaku));
     }
 
-    
+
     /**
      * 予想株価数から、予想株価ナンバーピッカーを初期設定
      *
@@ -247,7 +247,7 @@ public class MainActivity extends AppCompatActivity {
         mNumPickerKabuKa1.setValue(num1);
 
     }
-    
+
 
     // EidtTextのイベントを取得
     public class GenericTextWatcher implements TextWatcher {
