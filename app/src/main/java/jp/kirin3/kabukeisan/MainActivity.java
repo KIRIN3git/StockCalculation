@@ -1,5 +1,6 @@
 package jp.kirin3.kabukeisan;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,9 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 
+import static jp.kirin3.kabukeisan.CommonMng.costString;
+import static jp.kirin3.kabukeisan.CommonMng.showAlert;
+
 public class MainActivity extends AppCompatActivity {
 
     public EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
@@ -25,10 +29,13 @@ public class MainActivity extends AppCompatActivity {
     private Button mButtonKabuRese;
     public Integer mShutokuKabuKa,mShutokuKabuSuu,mYosouKabuKa;
     public Long mShutokuKingaku,mYosouSoneki,mYosouKingaku,mGensenChoshuu;
-
+    public static Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mContext = this;
+
         setContentView(R.layout.activity_main);
 
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
@@ -299,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                         if(mShutokuKabuKa > 100000){
                             mShutokuKabuKa = 99999;
                             mEditShutokuKabuKa.setText(mShutokuKabuKa.toString());
-                            showAlert("オーバーフロー","株価は99999まで設定可能です");
+                            showAlert("オーバーフロー","株価は99999まで設定可能です",mContext );
                             break;
                         }
 
@@ -325,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                             mShutokuKabuSuu = 99999999;
                             Log.w( "DEBUG_DATA", "AERAAERA2");
                             mEditShutokuKabuSuu.setText(mShutokuKabuSuu.toString());
-                            showAlert("オーバーフロー","株数は999999999まで設定可能です");
+                            showAlert("オーバーフロー","株数は999999999まで設定可能です",mContext);
                             break;
                         }
                     }
@@ -336,35 +343,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-
-    /**
-     * 金額表示
-     *
-     * @param cost 1円単位の金額
-     * @return 整形後の金額
-     */
-    public static String costString(long cost) {
-        DecimalFormat df1 = new DecimalFormat("###,###");
-        return "¥" + df1.format(cost);
-    }
-
-    /**
-     * ダイアログ表示
-     */
-    public void showAlert(String title,String message){
-        AlertDialog.Builder alertDlg = new AlertDialog.Builder(this);
-        alertDlg.setTitle(title);
-        alertDlg.setMessage(message);
-        alertDlg.setPositiveButton(
-        "OK",
-        new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int which) {
-             // OK ボタンクリック処理
-            }
-        });
-
-        // 表示
-        alertDlg.create().show();
-    }
-
 }
