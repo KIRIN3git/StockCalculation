@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kabukeisan.kirin3.jp.kabukeisan">
+    package="jp.kirin3.kabukeisan">
 
     <application
         android:allowBackup="true"

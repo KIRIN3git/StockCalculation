@@ -1,4 +1,4 @@
-package kabukeisan.kirin3.jp.kabukeisan;
+package jp.kirin3.kabukeisan;
 
 /**
  * Created by etisu on 2018/03/04.

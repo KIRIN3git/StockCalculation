@@ -1,15 +1,21 @@
-package kabukeisan.kirin3.jp.kabukeisan;
+package jp.kirin3.kabukeisan;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
         mNumPickerKabuKa3 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa3);
         mNumPickerKabuKa4 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa4);
         mNumPickerKabuKa5 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa5);
+
+        mNumPickerKabuKa1.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        mNumPickerKabuKa2.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        mNumPickerKabuKa3.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        mNumPickerKabuKa4.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        mNumPickerKabuKa5.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
         mTextShutokuKingaku = (TextView) findViewById(R.id.textShutokuKingaku);
         mTextYosouSoneki = (TextView) findViewById(R.id.textYosouSoneki);
@@ -171,13 +183,17 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-        yosouSoneki = ( mYosouKabuKa - mShutokuKabuKa ) * mShutokuKabuSuu;
-        yosouKingaku = mYosouKabuKa * mShutokuKabuSuu;
+        yosouSoneki = ( (long)mYosouKabuKa - (long)mShutokuKabuKa ) * (long)mShutokuKabuSuu;
+        yosouKingaku = (long)mYosouKabuKa * (long)mShutokuKabuSuu;
         gensenChoushuu = yosouSoneki * 20 / 100;
+        if(gensenChoushuu < 0) gensenChoushuu = 0;
 
-        mTextYosouSoneki.setText(String.valueOf(yosouSoneki));
-        mTextYosouKingaku.setText(String.valueOf(yosouKingaku));
-        mTextGensenChouShuu.setText(String.valueOf(gensenChoushuu));
+        mTextYosouSoneki.setText(costString(yosouSoneki));
+        if(yosouSoneki == 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.gray));
+        else if(yosouSoneki >= 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.red));
+        else mTextYosouSoneki.setTextColor(getResources().getColor(R.color.blue));
+        mTextYosouKingaku.setText(costString(yosouKingaku));
+        mTextGensenChouShuu.setText(costString(gensenChoushuu));
     }
 
     /**
@@ -185,9 +201,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setShutokuKingaku(){
         long kingaku;
+        long a = mShutokuKabuKa;
+        long b = mShutokuKabuSuu;
 
-        kingaku = mShutokuKabuKa * mShutokuKabuSuu;
-        mTextShutokuKingaku.setText(String.valueOf(kingaku));
+        kingaku = (long)mShutokuKabuKa * (long)mShutokuKabuSuu;
+        mTextShutokuKingaku.setText(costString(kingaku));
     }
 
 
@@ -258,11 +276,12 @@ public class MainActivity extends AppCompatActivity {
             this.view = view;
         }
 
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        }
 
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-
         }
+
 
         // EditTextが1文字編集されるごとに呼び出される
         public void afterTextChanged(Editable editable) {
@@ -276,9 +295,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuKa" );
                     if( mEditShutokuKabuKa.getText().toString() !=null && mEditShutokuKabuKa.getText().toString().length() > 0 ) {
                         mShutokuKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
+
+                        if(mShutokuKabuKa > 100000){
+                            mShutokuKabuKa = 99999;
+                            mEditShutokuKabuKa.setText(mShutokuKabuKa.toString());
+                            showAlert("オーバーフロー","株価は99999まで設定可能です");
+                            break;
+                        }
+
                         // 予想初期値セット
                         mYosouKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
-                        Log.w( "DEBUG_DATA", "aaaaaaaaa" );
                         setNumPickerKabuKa(mYosouKabuKa);
                     }
                     else{
@@ -293,6 +319,15 @@ public class MainActivity extends AppCompatActivity {
                     Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuSuu" );
                     if( mEditShutokuKabuSuu.getText().toString() !=null && mEditShutokuKabuSuu.getText().toString().length() > 0 ) {
                         mShutokuKabuSuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
+
+                        Log.w( "DEBUG_DATA", "AERAAERA1 mShutokuKabuSuu" + mShutokuKabuSuu);
+                        if(mShutokuKabuSuu > 100000000){
+                            mShutokuKabuSuu = 99999999;
+                            Log.w( "DEBUG_DATA", "AERAAERA2");
+                            mEditShutokuKabuSuu.setText(mShutokuKabuSuu.toString());
+                            showAlert("オーバーフロー","株数は999999999まで設定可能です");
+                            break;
+                        }
                     }
                     else mShutokuKabuSuu = 0;
                     setShutokuKingaku();
@@ -301,4 +336,35 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    /**
+     * 金額表示
+     *
+     * @param cost 1円単位の金額
+     * @return 整形後の金額
+     */
+    public static String costString(long cost) {
+        DecimalFormat df1 = new DecimalFormat("###,###");
+        return "¥" + df1.format(cost);
+    }
+
+    /**
+     * ダイアログ表示
+     */
+    public void showAlert(String title,String message){
+        AlertDialog.Builder alertDlg = new AlertDialog.Builder(this);
+        alertDlg.setTitle(title);
+        alertDlg.setMessage(message);
+        alertDlg.setPositiveButton(
+        "OK",
+        new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+             // OK ボタンクリック処理
+            }
+        });
+
+        // 表示
+        alertDlg.create().show();
+    }
+
 }

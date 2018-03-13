@@ -1,4 +1,4 @@
-package kabukeisan.kirin3.jp.kabukeisan;
+package jp.kirin3.kabukeisan;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
