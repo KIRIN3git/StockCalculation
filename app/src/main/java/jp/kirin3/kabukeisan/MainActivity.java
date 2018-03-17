@@ -1,32 +1,36 @@
 package jp.kirin3.kabukeisan;
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-
+import static jp.kirin3.kabukeisan.CommonMng.DpToPx2;
 import static jp.kirin3.kabukeisan.CommonMng.costString;
 import static jp.kirin3.kabukeisan.CommonMng.showAlert;
 
 public class MainActivity extends AppCompatActivity {
 
+    // 保存全銘柄数
+    public Integer mMeigaraNum = 0;
+    // 編集銘柄番号
+    public Integer mMeigaraNo = 0;
+
+
+    private LinearLayout mLlScroll;
+    private TextView mTextNew,mTextSave,mTextReset;
     public EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
     private TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
     private CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
-    private Button mButtonKabuRese;
     public Integer mShutokuKabuKa,mShutokuKabuSuu,mYosouKabuKa;
     public Long mShutokuKingaku,mYosouSoneki,mYosouKingaku,mGensenChoshuu;
     public static Context mContext;
@@ -37,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
         mContext = this;
 
         setContentView(R.layout.activity_main);
+
+        mLlScroll = (LinearLayout) findViewById(R.id.llScroll);
+
+        mTextNew = (TextView) findViewById(R.id.textNew);
+        mTextSave = (TextView) findViewById(R.id.textSave);
+        mTextReset = (TextView) findViewById(R.id.textReset);
 
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
@@ -63,9 +73,48 @@ public class MainActivity extends AppCompatActivity {
         mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingaku);
         mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuu);
 
-        mButtonKabuRese = (Button) findViewById(R.id.buttonYosouReset);
 
-        mButtonKabuRese.setOnClickListener(new View.OnClickListener(){
+
+        float density = mContext.getResources().getDisplayMetrics().density;
+
+        // 追加テキスト
+        mTextNew.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+
+            }
+        });
+
+        int height_px = DpToPx2(40,density);
+        int padding_px = DpToPx2(5,density);
+        int margin_px = DpToPx2(2,density);
+        int a = getResources().getColor(R.color.pPurple);
+
+        for(int i= 0; i< 3; i++) {
+            TextView tv = new TextView(mContext);
+            tv.setText("15");
+            tv.setTextSize(20);
+            tv.setBackgroundColor(getResources().getColor(R.color.pYellow2));
+            tv.setGravity(Gravity.CENTER);
+//            tv.setHeight(height_px);
+            tv.setPadding(padding_px, padding_px, padding_px, padding_px);
+            // レイアウトとマージンの指定
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height_px);
+            layoutParams.setMargins(0, margin_px, margin_px, margin_px);
+            tv.setLayoutParams(layoutParams);
+
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            mLlScroll.addView(tv);
+        }
+
+
+        // 入力データリセットボタン
+        mTextReset.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 // 予想株価を取得株価にリセット

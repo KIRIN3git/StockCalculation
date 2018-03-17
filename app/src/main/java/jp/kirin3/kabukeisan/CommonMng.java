@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;
@@ -25,17 +26,24 @@ public class CommonMng {
 	 */
 	public static final String DATASAVE = "DataSave";
 	
-	public static float PxToDp(float px,float density){
-		float dp = px * density + 0.5f;
+	public static float DpToPx(float dp,float density){
+		float px = dp * density;
+
+		return px;
+	}
+
+    public static int DpToPx2(int dp,float density){
+        int px = (int)(dp * density);
+
+        return px;
+    }
+
+	public static int PxToDp2(int px,float density){
+		int dp = (int)(px / density);
 
 		return dp;
 	}
 
-    public static int PxToDp2(int px,float density){
-        int dp = (int)(px * density + 0.5f);
-
-        return dp;
-    }
 
 	// XY座標のパーセントをピクセルで返す
 	public static float[] PsToPx(float psx,float psy){
