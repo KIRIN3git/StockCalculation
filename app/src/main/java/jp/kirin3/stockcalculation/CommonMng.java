@@ -1,4 +1,4 @@
-package jp.kirin3.kabukeisan;
+package jp.kirin3.stockcalculation;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Point;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.Calendar;

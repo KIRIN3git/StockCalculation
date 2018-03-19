@@ -1,4 +1,4 @@
-package jp.kirin3.kabukeisan;
+package jp.kirin3.stockcalculation;
 
 /**
  * Created by etisu on 2018/03/04.

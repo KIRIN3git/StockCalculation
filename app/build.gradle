@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "jp.kirin3.kabukeisan"
+        applicationId "jp.kirin3.stockcalculation"
         minSdkVersion 17
         targetSdkVersion 26
         versionCode 1

@@ -1,4 +1,4 @@
-package jp.kirin3.kabukeisan;
+package jp.kirin3.stockcalculation;
 
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
@@ -14,9 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
 
-import static jp.kirin3.kabukeisan.CommonMng.DpToPx2;
-import static jp.kirin3.kabukeisan.CommonMng.costString;
-import static jp.kirin3.kabukeisan.CommonMng.showAlert;
+import static jp.kirin3.stockcalculation.CommonMng.DpToPx2;
+import static jp.kirin3.stockcalculation.CommonMng.costString;
+import static jp.kirin3.stockcalculation.CommonMng.showAlert;
 
 public class MainActivity extends AppCompatActivity {
 
