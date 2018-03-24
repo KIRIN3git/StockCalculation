@@ -21,9 +21,12 @@ import static jp.kirin3.stockcalculation.CommonMng.showAlert;
 public class MainActivity extends AppCompatActivity {
 
     // 保存全銘柄数
-    public Integer mMeigaraNum = 0;
-    // 編集銘柄番号
-    public Integer mMeigaraNo = 0;
+    public Integer mMeigaraMaxNum;
+    // 編集中銘柄番号
+    public Integer mNowMeigaraNo = 0;
+
+    public String PRE_MEIGARA_MAX_NUM = "PRE_MEIGARA_MAX_NUM";
+    public String PRE_NOW_MEIGARA_NO = "PRE_NOW_MEIGARA_NO";
 
 
     private LinearLayout mLlScroll;
@@ -73,45 +76,40 @@ public class MainActivity extends AppCompatActivity {
         mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingaku);
         mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuu);
 
+        mMeigaraMaxNum = CommonMng.getPrefInt(mContext,PRE_MEIGARA_MAX_NUM);
+        if(mMeigaraMaxNum == 0) mMeigaraMaxNum = 1;
+        mNowMeigaraNo = CommonMng.getPrefInt(mContext,PRE_NOW_MEIGARA_NO);
 
+        // ヘッダーに銘柄を設定
+        HeaderSetText();
 
-        float density = mContext.getResources().getDisplayMetrics().density;
-
-        // 追加テキスト
+        // 新規データ作成ボタン
         mTextNew.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+                mMeigaraMaxNum++;
+                CommonMng.setPrefInt(mContext,PRE_MEIGARA_MAX_NUM, mMeigaraMaxNum);
+                mLlScroll.removeAllViews();
+                HeaderSetText();
             }
         });
 
-        int height_px = DpToPx2(40,density);
-        int padding_px = DpToPx2(5,density);
-        int margin_px = DpToPx2(2,density);
-        int a = getResources().getColor(R.color.pPurple);
+        // データのセーブ作成ボタン
+        mTextSave.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String key;
+                key ="MEIGARA_" + mNowMeigaraNo;
+                CommonMng.setPrefString(mContext,key,mEditMeigara.getText().toString());
+                key ="KABU_KA_" + mNowMeigaraNo;
+                CommonMng.setPrefInt(mContext,key,mShutokuKabuKa);
+                key ="KABU_SUU_" + mNowMeigaraNo;
+                CommonMng.setPrefInt(mContext,key,mShutokuKabuSuu);
 
-        for(int i= 0; i< 3; i++) {
-            TextView tv = new TextView(mContext);
-            tv.setText("15");
-            tv.setTextSize(20);
-            tv.setBackgroundColor(getResources().getColor(R.color.pYellow2));
-            tv.setGravity(Gravity.CENTER);
-//            tv.setHeight(height_px);
-            tv.setPadding(padding_px, padding_px, padding_px, padding_px);
-            // レイアウトとマージンの指定
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height_px);
-            layoutParams.setMargins(0, margin_px, margin_px, margin_px);
-            tv.setLayoutParams(layoutParams);
-
-            tv.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-            mLlScroll.addView(tv);
-        }
-
+                mLlScroll.removeAllViews();
+                HeaderSetText();
+            }
+        });
 
         // 入力データリセットボタン
         mTextReset.setOnClickListener(new View.OnClickListener(){
@@ -125,6 +123,89 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getChangeNumberPicker();
+    }
+
+
+    public void HeaderSetText(){
+        float density = mContext.getResources().getDisplayMetrics().density;
+
+        int height_px = DpToPx2(40,density);
+        int padding_px = DpToPx2(5,density);
+        int margin_px = DpToPx2(2,density);
+
+        Log.w( "DEBUG_DATA", "mMeigaraMaxNum" + mMeigaraMaxNum);
+
+        for( int i = 0; i < mMeigaraMaxNum; i++) {
+
+            String key;
+            key ="MEIGARA_" + i;
+            String meigara = CommonMng.getPrefData(mContext,key);
+            key ="KABU_KA_" + i;
+            Integer kabuKa = CommonMng.getPrefInt(mContext,key);
+            key ="KABU_SUU_" + i;
+            Integer kabuSuu = CommonMng.getPrefInt(mContext,key);
+
+
+            // ヘッダーにセット
+            if( meigara.isEmpty() ){
+                meigara = "銘柄" + (i+1);
+            }
+
+
+            TextView tv = new TextView(mContext);
+            tv = new TextView(mContext);
+            tv.setId(i);
+            tv.setText(meigara);
+            tv.setTextSize(20);
+            tv.setBackgroundColor(getResources().getColor(R.color.pYellow2));
+            tv.setGravity(Gravity.CENTER);
+//            tv.setHeight(height_px);
+            tv.setPadding(padding_px, padding_px, padding_px, padding_px);
+            // レイアウトとマージンの指定
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height_px);
+            layoutParams.setMargins(0, margin_px, margin_px, margin_px);
+            tv.setLayoutParams(layoutParams);
+
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String key;
+
+                    mNowMeigaraNo = v.getId();
+
+                    key ="MEIGARA_" + v.getId();
+                    String meigara = CommonMng.getPrefData(mContext,key);
+                    int no = v.getId();
+                    if(meigara.isEmpty()) meigara = "銘柄" + (no+1);
+
+                    Log.w( "DEBUG_DATA", "v.getId() = " + v.getId());
+                    Log.w( "DEBUG_DATA", "key = " + key);
+                    Log.w( "DEBUG_DATA", "meigara = " + meigara);
+
+                    key ="KABU_KA_" + v.getId();
+                    Integer kabuKa = CommonMng.getPrefInt(mContext,key);
+                    key ="KABU_SUU_" + v.getId();
+                    Integer kabuSuu = CommonMng.getPrefInt(mContext,key);
+
+                    mEditMeigara.setText(meigara);
+
+                    if(kabuKa != 0) mEditShutokuKabuKa.setText(kabuKa.toString());
+                    else mEditShutokuKabuKa.setText("");
+                    if(kabuSuu != 0) mEditShutokuKabuSuu.setText(kabuSuu.toString());
+                    else mEditShutokuKabuSuu.setText("");
+                }
+            });
+            mLlScroll.addView(tv);
+
+            // 初期値設定
+            if (i == mNowMeigaraNo) {
+                mEditMeigara.setText(meigara);
+                if(kabuKa != 0) mEditShutokuKabuKa.setText(kabuKa.toString());
+                if(kabuSuu != 0) mEditShutokuKabuSuu.setText(kabuSuu.toString());
+                mShutokuKabuKa = kabuKa;
+                mShutokuKabuSuu = kabuSuu;
+            }
+        }
     }
 
     @Override
@@ -257,9 +338,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setShutokuKingaku(){
         long kingaku;
-        long a = mShutokuKabuKa;
-        long b = mShutokuKabuSuu;
 
+        if( mShutokuKabuKa == null || mShutokuKabuSuu == null ) return;
+        Log.w( "DEBUG_DATA", "aaaaaaaaaaaaaaa");
+        Log.w( "DEBUG_DATA", "mShutokuKabuKa" + mShutokuKabuKa);
+        Log.w( "DEBUG_DATA", "mShutokuKabuSuu" + mShutokuKabuSuu);
         kingaku = (long)mShutokuKabuKa * (long)mShutokuKabuSuu;
         mTextShutokuKingaku.setText(costString(kingaku));
     }

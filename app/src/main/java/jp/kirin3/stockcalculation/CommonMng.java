@@ -148,6 +148,13 @@ public class CommonMng {
 		return sharedPreferences.getBoolean(key, defaultParam);
 	}
 
+	// String型の読み書き
+	public static void setPrefString(Context context, String key, String value) {
+		SharedPreferences sharedPreferences = context.getSharedPreferences(
+				DATASAVE, Activity.MODE_PRIVATE);
+		sharedPreferences.edit().putString(key, value).commit();
+	}
+
 	// int型の読み書き
 	public static void setPrefInt(Context context, String key, int value) {
 		SharedPreferences sharedPreferences = context.getSharedPreferences(
