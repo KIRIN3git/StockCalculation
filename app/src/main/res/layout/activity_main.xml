@@ -46,13 +46,6 @@
 
         </LinearLayout>
 
-        <!--
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:background="@color/pBlue2"/>
-        -->
-
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
@@ -309,43 +302,37 @@
                                 custom:min="0"
                                 android:theme="@style/AlertDialog.AppCompat.Light"/>
                         </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center"
-                            android:layout_marginTop="10dp">
-
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp">
-                            <TextView
-                                android:textSize="20sp"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="予想損益"/>
-                            <TextView
-                                android:id="@+id/textYosouSoneki"
-                                android:gravity="center"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:textSize="20sp"
-                                tools:text="0"/>
-                        </LinearLayout>
-
                     </LinearLayout>
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="10dp">
+                </LinearLayout>
 
-
-               </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp">
+                    <TextView
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="予想損益"/>
+                    <TextView
+                        android:id="@+id/textYosouSoneki"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="20sp"
+                        tools:text="0"/>
+                </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -390,8 +377,31 @@
                         android:textSize="20sp"
                         tools:text="0"/>
                 </LinearLayout>
-            </LinearLayout>
 
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <jp.kirin3.stockcalculation.CustomNumberPicker
+                        android:id="@+id/numPickerNensuu"
+                        xmlns:custom="http://schemas.android.com/apk/res-auto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:background="@drawable/drawablenp"
+                        custom:max="99"
+                        custom:min="0"
+                        android:theme="@style/AlertDialog.AppCompat.Light"/>
+                </LinearLayout>
+            </LinearLayout>
         </ScrollView>
     </LinearLayout>
 
