@@ -16,6 +16,7 @@
     <!-- デフォルトTextViewの値 -->
     <color name="littleGray">#eefefe</color>
     <color name="gray">#777777</color>
+    <color name="darkGray">#555555</color>
     <color name="forestGreen">#228B22</color>
     <color name="pGreen">#def7c9</color>
     <color name="pBlue">#d9fbff</color>

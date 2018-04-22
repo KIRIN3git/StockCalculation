@@ -22,23 +22,20 @@ import static jp.kirin3.stockcalculation.CommonMng.showAlert;
 
 public class MainActivity extends AppCompatActivity {
 
-    // 保存全銘柄数
-    public Integer mMeigaraMaxNum;
-    // 編集中銘柄番号
-    public Integer mNowMeigaraNo = 0;
 
-    public String PRE_MEIGARA_MAX_NUM = "PRE_MEIGARA_MAX_NUM";
-    public String PRE_NOW_MEIGARA_NO = "PRE_NOW_MEIGARA_NO";
 
+
+    private static Context mContext;
 
     private LinearLayout mLlScroll;
     private TextView mTextAdd,mTextSave,mTextDel,mTextReset;
-    public EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
+    private EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
     private TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
     private CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
-    public Integer mShutokuKabuKa,mShutokuKabuSuu,mYosouKabuKa;
-    public Long mShutokuKingaku,mYosouSoneki,mYosouKingaku,mGensenChoshuu;
-    public static Context mContext;
+
+    private Integer mShutokuKabuKa,mShutokuKabuSuu,mYosouKabuKa;
+    private Long mShutokuKingaku,mYosouSoneki,mYosouKingaku,mGensenChoshuu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,13 +72,17 @@ public class MainActivity extends AppCompatActivity {
         mNumPickerKabuKa5.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
         mTextShutokuKingaku = (TextView) findViewById(R.id.textShutokuKingaku);
-        mTextYosouSoneki = (TextView) findViewById(R.id.textYosouSoneki);
-        mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingaku);
-        mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuu);
+        mTextYosouSoneki = (TextView) findViewById(R.id.textYosouSonekiP);
+        mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingakuP);
+        mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuuP);
 
-        mMeigaraMaxNum = CommonMng.getPrefInt(mContext,PRE_MEIGARA_MAX_NUM);
-        if(mMeigaraMaxNum == 0) mMeigaraMaxNum = 1;
-        mNowMeigaraNo = CommonMng.getPrefInt(mContext,PRE_NOW_MEIGARA_NO);
+        StockData.InitStockData(mContext);
+
+        // 最初に一人分を表示
+        StockData.AddPreUserMeigaraNum();
+        String meigara = "銘柄1";
+        StockData.SetPreMeigara(0,meigara);
+        mEditMeigara.setText(meigara);
 
         // ヘッダーに銘柄を設定
         HeaderSetText();
@@ -90,10 +91,18 @@ public class MainActivity extends AppCompatActivity {
         mTextAdd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                mMeigaraMaxNum++;
-                CommonMng.setPrefInt(mContext,PRE_MEIGARA_MAX_NUM, mMeigaraMaxNum);
-                HeaderSetText();
+                StockData.AddPreUserMeigaraNum();
 
+                // 新しい銘柄を先に保存
+                int no = StockData.GetPreUserMeigaraNum();
+                String meigara = "銘柄" + (no);
+                StockData.SetPreMeigara(no-1,meigara);
+
+
+                Log.w( "DEBUG_DATA", "aaa set no "+ no);
+                Log.w( "DEBUG_DATA", "aaa set meigara "+ meigara);
+
+                HeaderSetText();
                 Toast.makeText(mContext,"銘柄を追加しました",Toast.LENGTH_LONG).show();
             }
         });
@@ -108,65 +117,20 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
+                /*
                 String key;
-                key ="MEIGARA_" + mNowMeigaraNo;
+                key ="MEIGARA_" + sNowMeigaraNo;
                 CommonMng.setPrefString(mContext,key,mEditMeigara.getText().toString());
-                key ="KABU_KA_" + mNowMeigaraNo;
+                key ="KABU_KA_" + sNowMeigaraNo;
                 CommonMng.setPrefInt(mContext,key,mShutokuKabuKa);
-                key ="KABU_SUU_" + mNowMeigaraNo;
+                key ="KABU_SUU_" + sNowMeigaraNo;
                 CommonMng.setPrefInt(mContext,key,mShutokuKabuSuu);
-
+                */
                 HeaderSetText();
 
                 Toast.makeText(mContext,"保存しました",Toast.LENGTH_LONG).show();
             }
         });
-
-        // データの削除作成ボタン
-        mTextDel.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                for( int i = mNowMeigaraNo; i < mMeigaraMaxNum; i++) {
-
-                    // 最後のプリファランスを削除
-                    if( i == mNowMeigaraNo - 1 ) {
-                        String key;
-                        key = "MEIGARA_" + i;
-                        CommonMng.setPrefString(mContext, key, "");
-                        key = "KABU_KA_" + i;
-                        CommonMng.setPrefInt(mContext, key, 0);
-                        key = "KABU_SUU_" + i;
-                        CommonMng.setPrefInt(mContext, key, 0);
-                    }
-                    // 左に一個ずつデータを移す
-                    else{
-                        String key;
-                        key ="MEIGARA_" + (i + 1);
-                        String meigara = CommonMng.getPrefData(mContext,key);
-                        key ="KABU_KA_" + (i + 1);
-                        Integer kabuKa = CommonMng.getPrefInt(mContext,key);
-                        key ="KABU_SUU_" + (i + 1);
-                        Integer kabuSuu = CommonMng.getPrefInt(mContext,key);
-
-                        key = "MEIGARA_" + i;
-                        CommonMng.setPrefString(mContext, key, meigara);
-                        key = "KABU_KA_" + i;
-                        CommonMng.setPrefInt(mContext, key, kabuKa);
-                        key = "KABU_SUU_" + i;
-                        CommonMng.setPrefInt(mContext, key, kabuSuu);
-                    }
-                }
-
-                mMeigaraMaxNum--;
-                HeaderSetText();
-
-                Toast.makeText(mContext,"削除しました",Toast.LENGTH_LONG).show();
-            }
-        });
-
-        Toast.makeText(mContext,"test",Toast.LENGTH_LONG).show();
-
-
 
         // 入力データリセットボタン
         mTextReset.setOnClickListener(new View.OnClickListener(){
@@ -192,24 +156,16 @@ public class MainActivity extends AppCompatActivity {
         int padding_px = DpToPx2(5,density);
         int margin_px = DpToPx2(2,density);
 
-
         mLlScroll.removeAllViews();
 
+        for( int i = 0; i < StockData.sUserMeigaraNum; i++) {
 
-        for( int i = 0; i < mMeigaraMaxNum; i++) {
+            String meigara = StockData.GetPreMeigara(i);
+            Integer kabuKa = StockData.GetPreKabuKa(i);
+            Integer kabuSuu = StockData.GetPreKabuSuu(i);
 
-            String key;
-            key ="MEIGARA_" + i;
-            String meigara = CommonMng.getPrefData(mContext,key);
-            key ="KABU_KA_" + i;
-            Integer kabuKa = CommonMng.getPrefInt(mContext,key);
-            key ="KABU_SUU_" + i;
-            Integer kabuSuu = CommonMng.getPrefInt(mContext,key);
-
-            // ヘッダーにセット
-            if( meigara.isEmpty() ){
-                meigara = "銘柄" + (i+1);
-            }
+            Log.w( "DEBUG_DATA", "aaa get i "+ i);
+            Log.w( "DEBUG_DATA", "aaa get meigara "+ meigara);
 
             TextView tv = new TextView(mContext);
             tv = new TextView(mContext);
@@ -217,9 +173,9 @@ public class MainActivity extends AppCompatActivity {
             tv.setText(meigara);
             tv.setTextSize(20);
             tv.setBackgroundColor(getResources().getColor(R.color.pYellow));
-            if (i == mNowMeigaraNo){
+            if (i == StockData.GetPreNowMeigaraNo()){
                 tv.setTypeface(Typeface.DEFAULT_BOLD);
-                tv.setTextColor(getResources().getColor(R.color.black));
+                tv.setTextColor(getResources().getColor(R.color.darkGray));
             }
             tv.setGravity(Gravity.CENTER);
 //            tv.setHeight(height_px);
@@ -234,39 +190,30 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     String key;
 
-                    mNowMeigaraNo = v.getId();
-                    Log.w( "DEBUG_DATA", "mNowMeigaraNo = " + mNowMeigaraNo);
+                    StockData.SetPreNowMeigaraNo(v.getId());
 
-                    key ="MEIGARA_" + v.getId();
-                    String meigara = CommonMng.getPrefData(mContext,key);
                     int no = v.getId();
-                    if(meigara.isEmpty()) meigara = "銘柄" + (no+1);
+
+                    String meigara = StockData.GetPreMeigara(no);
+                    Integer kabuKa = StockData.GetPreKabuKa(no);
+                    Integer kabuSuu = StockData.GetPreKabuSuu(no);
 
                     Log.w( "DEBUG_DATA", "v.getId() = " + v.getId());
-                    Log.w( "DEBUG_DATA", "key = " + key);
                     Log.w( "DEBUG_DATA", "meigara = " + meigara);
 
-                    key ="KABU_KA_" + v.getId();
-                    Integer kabuKa = CommonMng.getPrefInt(mContext,key);
-                    key ="KABU_SUU_" + v.getId();
-                    Integer kabuSuu = CommonMng.getPrefInt(mContext,key);
-
                     mEditMeigara.setText(meigara);
-
                     if(kabuKa != 0) mEditShutokuKabuKa.setText(kabuKa.toString());
                     else mEditShutokuKabuKa.setText("");
                     if(kabuSuu != 0) mEditShutokuKabuSuu.setText(kabuSuu.toString());
                     else mEditShutokuKabuSuu.setText("");
 
-
                     HeaderSetText();
-
                 }
             });
             mLlScroll.addView(tv);
 
             // 初期値設定
-            if (i == mNowMeigaraNo) {
+            if (i == StockData.sUserMeigaraNum) {
 
                 mEditMeigara.setText(meigara);
                 if(kabuKa != 0) mEditShutokuKabuKa.setText(kabuKa.toString());
@@ -496,6 +443,9 @@ public class MainActivity extends AppCompatActivity {
             switch (view.getId()) {
                 case R.id.editMeigara:
                     Log.w( "DEBUG_DATA", "afterTextChanged editMeigara" );
+                    // 1文字入力ごとにデータを保管
+                    StockData.SetMeigara(mEditMeigara.getText().toString());
+                    HeaderSetText();
 
                     break;
                 case R.id.editShutokuKabuKa:
@@ -512,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // 予想初期値セット
                         mYosouKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
+                        StockData.SetKabuKa(mYosouKabuKa);
                         setNumPickerKabuKa(mYosouKabuKa);
                     }
                     else{
@@ -535,6 +486,10 @@ public class MainActivity extends AppCompatActivity {
                             showAlert("オーバーフロー","株数は999999999まで設定可能です",mContext);
                             break;
                         }
+
+                        mShutokuKabuSuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
+                        StockData.SetKabuSuu(mShutokuKabuSuu);
+
                     }
                     else mShutokuKabuSuu = 0;
                     setShutokuKingaku();
