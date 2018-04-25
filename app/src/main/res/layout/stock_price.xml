@@ -13,43 +13,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-
-            <Switch
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="手数料計算" />
-
-            <TextView
-                android:id="@+id/textDel"
-                android:text="DEL"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="14sp"
-                android:layout_margin="2dp"
-                android:background="@color/pBlue"
-                android:layout_width="60dp"
-                android:layout_height="40dp" />
-
-            <TextView
-                android:id="@+id/textSave"
-                android:text="SAVE"
-                android:textStyle="bold"
-                android:gravity="center"
-                android:textSize="14sp"
-                android:layout_margin="2dp"
-                android:background="@color/pPurple"
-                android:layout_width="60dp"
-                android:layout_height="40dp" />
-
-
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
             <TextView

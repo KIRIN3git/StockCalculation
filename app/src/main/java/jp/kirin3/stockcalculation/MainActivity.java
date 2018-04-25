@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private static Context mContext;
 
     private LinearLayout mLlScroll;
-    private TextView mTextAdd,mTextSave,mTextDel,mTextReset;
+    private TextView mTextAdd,mTextReset;
     private EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
     private TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
     private CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
@@ -47,9 +47,7 @@ public class MainActivity extends AppCompatActivity {
         mLlScroll = (LinearLayout) findViewById(R.id.llScroll);
 
         mTextAdd = (TextView) findViewById(R.id.textNew);
-        mTextSave = (TextView) findViewById(R.id.textSave);
         mTextReset = (TextView) findViewById(R.id.textReset);
-        mTextDel = (TextView) findViewById(R.id.textDel);
 
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
@@ -79,10 +77,12 @@ public class MainActivity extends AppCompatActivity {
         StockData.InitStockData(mContext);
 
         // 最初に一人分を表示
-        StockData.AddPreUserMeigaraNum();
-        String meigara = "銘柄1";
-        StockData.SetPreMeigara(0,meigara);
-        mEditMeigara.setText(meigara);
+        if( StockData.sUserMeigaraNum == 0 ) {
+            StockData.AddPreUserMeigaraNum();
+            String meigara = "銘柄1";
+            StockData.SetPreMeigara(0, meigara);
+            mEditMeigara.setText(meigara);
+        }
 
         // ヘッダーに銘柄を設定
         HeaderSetText();
@@ -107,30 +107,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // データのセーブ作成ボタン
-        mTextSave.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-
-                if(mEditMeigara.getText().toString().isEmpty()){
-                    Toast.makeText(mContext,"銘柄を入力してください",Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                /*
-                String key;
-                key ="MEIGARA_" + sNowMeigaraNo;
-                CommonMng.setPrefString(mContext,key,mEditMeigara.getText().toString());
-                key ="KABU_KA_" + sNowMeigaraNo;
-                CommonMng.setPrefInt(mContext,key,mShutokuKabuKa);
-                key ="KABU_SUU_" + sNowMeigaraNo;
-                CommonMng.setPrefInt(mContext,key,mShutokuKabuSuu);
-                */
-                HeaderSetText();
-
-                Toast.makeText(mContext,"保存しました",Toast.LENGTH_LONG).show();
-            }
-        });
 
         // 入力データリセットボタン
         mTextReset.setOnClickListener(new View.OnClickListener(){
@@ -462,6 +438,7 @@ public class MainActivity extends AppCompatActivity {
 
                         // 予想初期値セット
                         mYosouKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
+                        // 取得株価のリアルタイム保存
                         StockData.SetKabuKa(mYosouKabuKa);
                         setNumPickerKabuKa(mYosouKabuKa);
                     }
@@ -488,6 +465,7 @@ public class MainActivity extends AppCompatActivity {
                         }
 
                         mShutokuKabuSuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
+                        // 取得株数のリアルタイム保存
                         StockData.SetKabuSuu(mShutokuKabuSuu);
 
                     }

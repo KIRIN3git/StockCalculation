@@ -14,18 +14,21 @@ import android.util.Log;
 public class StockData {
 
 
-    // 編集中銘柄
-    public static String sMeigara;
+    // 編集中取得銘柄
+    public static String sShutokuMeigara;
 
-    // 編集中株価
-    public static String sKabuKa;
+    // 編集中取得株価
+    public static Integer sShutokuKabuKa;
 
-    // 編集中株数
-    public static String sKabuSuu;
+    // 編集中取得株数
+    public static Integer sShutokuKabuSuu;
+
+    // 編集中予想株価
+    public static Integer sYosouKabuSuu;
 
     // 最大銘柄登録数
     final static int MEIGARA_MAX_NUM = 5;
-    // ユーザーの編集中銘柄番号
+    // ユーザーの銘柄数
     public static Integer sUserMeigaraNum = 0;
     // 編集中銘柄番号
     private static Integer sNowMeigaraNo = 0;
@@ -49,8 +52,6 @@ public class StockData {
 
     public static void InitStockData(Context context){
         mContext = context;
-
-
 
         sUserMeigaraNum = GetPreUserMeigaraNum();
         sNowMeigaraNo = GetPreNowMeigaraNo();
