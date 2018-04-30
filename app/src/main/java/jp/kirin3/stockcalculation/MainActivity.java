@@ -22,19 +22,13 @@ import static jp.kirin3.stockcalculation.CommonMng.showAlert;
 
 public class MainActivity extends AppCompatActivity {
 
-
-
-
     private static Context mContext;
 
-    private LinearLayout mLlScroll;
-    private TextView mTextAdd,mTextReset;
-    private EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
-    private TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
-    private CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
-
-    private Integer mShutokuKabuKa,mShutokuKabuSuu,mYosouKabuKa;
-    private Long mShutokuKingaku,mYosouSoneki,mYosouKingaku,mGensenChoshuu;
+    private static LinearLayout mLlScroll;
+    private static TextView mTextAdd,mTextReset;
+    private static EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
+    private static TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
+    private static CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,15 +68,6 @@ public class MainActivity extends AppCompatActivity {
         mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingakuP);
         mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuuP);
 
-        StockData.InitStockData(mContext);
-
-        // 最初に一人分を表示
-        if( StockData.sUserMeigaraNum == 0 ) {
-            StockData.AddPreUserMeigaraNum();
-            String meigara = "銘柄1";
-            StockData.SetPreMeigara(0, meigara);
-            mEditMeigara.setText(meigara);
-        }
 
         // ヘッダーに銘柄を設定
         HeaderSetText();
@@ -91,30 +76,32 @@ public class MainActivity extends AppCompatActivity {
         mTextAdd.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-                StockData.AddPreUserMeigaraNum();
+
+                if( StockData.sSaveNum == StockData.SAVE_MAX_NUM ){
+                    Toast.makeText(mContext,"登録最大数になりました",Toast.LENGTH_LONG).show();
+
+                    return;
+                }
+
+                StockData.AddPreSaveNum();
 
                 // 新しい銘柄を先に保存
-                int no = StockData.GetPreUserMeigaraNum();
+                int no = StockData.GetPreUsingNum();
                 String meigara = "銘柄" + (no);
                 StockData.SetPreMeigara(no-1,meigara);
-
-
-                Log.w( "DEBUG_DATA", "aaa set no "+ no);
-                Log.w( "DEBUG_DATA", "aaa set meigara "+ meigara);
-
                 HeaderSetText();
+
                 Toast.makeText(mContext,"銘柄を追加しました",Toast.LENGTH_LONG).show();
             }
         });
-
 
         // 入力データリセットボタン
         mTextReset.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 // 予想株価を取得株価にリセット
-                mYosouKabuKa = mShutokuKabuKa;
-                setNumPickerKabuKa(mYosouKabuKa);
+                StockData.sYosouKabuKa = StockData.sShutokuKabuKa;
+                setNumPickerKabuKa(StockData.sYosouKabuKa);
                 setYosouAll();
 
                 Toast.makeText(mContext,"ピッカーをリセットしました",Toast.LENGTH_LONG).show();
@@ -124,7 +111,17 @@ public class MainActivity extends AppCompatActivity {
         getChangeNumberPicker();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        StockData.InitStockData(mContext,mEditMeigara,mEditShutokuKabuKa,mEditShutokuKabuSuu);
+        setYosouAll();
+    }
+
+    /*****
+     *  ヘッダー部分の表示
+     *****/
     public void HeaderSetText(){
         float density = mContext.getResources().getDisplayMetrics().density;
 
@@ -134,11 +131,11 @@ public class MainActivity extends AppCompatActivity {
 
         mLlScroll.removeAllViews();
 
-        for( int i = 0; i < StockData.sUserMeigaraNum; i++) {
+        for(int i = 0; i < StockData.sSaveNum; i++) {
 
             String meigara = StockData.GetPreMeigara(i);
-            Integer kabuKa = StockData.GetPreKabuKa(i);
-            Integer kabuSuu = StockData.GetPreKabuSuu(i);
+            Integer kabuKa = StockData.GetPreShutokuKabuKa(i);
+            Integer kabuSuu = StockData.GetPreShutokuKabuSuu(i);
 
             Log.w( "DEBUG_DATA", "aaa get i "+ i);
             Log.w( "DEBUG_DATA", "aaa get meigara "+ meigara);
@@ -149,7 +146,8 @@ public class MainActivity extends AppCompatActivity {
             tv.setText(meigara);
             tv.setTextSize(20);
             tv.setBackgroundColor(getResources().getColor(R.color.pYellow));
-            if (i == StockData.GetPreNowMeigaraNo()){
+            // 編集中のデータは目立つように
+            if (i == StockData.GetPreSaveNo()){
                 tv.setTypeface(Typeface.DEFAULT_BOLD);
                 tv.setTextColor(getResources().getColor(R.color.darkGray));
             }
@@ -166,51 +164,41 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     String key;
 
-                    StockData.SetPreNowMeigaraNo(v.getId());
+                    StockData.SetUsingNo(v.getId());
 
                     int no = v.getId();
 
                     String meigara = StockData.GetPreMeigara(no);
-                    Integer kabuKa = StockData.GetPreKabuKa(no);
-                    Integer kabuSuu = StockData.GetPreKabuSuu(no);
+                    Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
+                    Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
+                    Integer yosouKabuka = StockData.GetPreYosouKabuKa(no);
 
                     Log.w( "DEBUG_DATA", "v.getId() = " + v.getId());
                     Log.w( "DEBUG_DATA", "meigara = " + meigara);
 
                     mEditMeigara.setText(meigara);
-                    if(kabuKa != 0) mEditShutokuKabuKa.setText(kabuKa.toString());
+                    if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString());
                     else mEditShutokuKabuKa.setText("");
-                    if(kabuSuu != 0) mEditShutokuKabuSuu.setText(kabuSuu.toString());
+                    if(shutokuKabuSuu != 0) mEditShutokuKabuSuu.setText(shutokuKabuSuu.toString());
                     else mEditShutokuKabuSuu.setText("");
+                    setNumPickerKabuKa(yosouKabuka);
 
                     HeaderSetText();
                 }
             });
             mLlScroll.addView(tv);
 
+            /*
             // 初期値設定
-            if (i == StockData.sUserMeigaraNum) {
-
+            if (i == StockData.sSaveNum) {
                 mEditMeigara.setText(meigara);
                 if(kabuKa != 0) mEditShutokuKabuKa.setText(kabuKa.toString());
                 if(kabuSuu != 0) mEditShutokuKabuSuu.setText(kabuSuu.toString());
-                mShutokuKabuKa = kabuKa;
-                mShutokuKabuSuu = kabuSuu;
+                StockData.sShutokuKabuKa = kabuKa;
+                StockData.sShutokuKabuSuu = kabuSuu;
             }
+            */
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        mShutokuKabuKa = 0;
-        mShutokuKabuSuu = 0;
-        mShutokuKingaku = 0L;
-        mYosouKabuKa = 0;
-        mYosouSoneki = 0L;
-        mYosouKingaku = 0L;
-        mGensenChoshuu = 0L;
     }
 
     public void getChangeNumberPicker() {
@@ -257,13 +245,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void exeChangeNumPicker(int no,int oldVal,int newVal ){
 
-
         int v1 = mNumPickerKabuKa1.getValue();
         int v2 = mNumPickerKabuKa2.getValue();
         int v3 = mNumPickerKabuKa3.getValue();
         int v4 = mNumPickerKabuKa4.getValue();
         int v5 = mNumPickerKabuKa5.getValue();
-
 
         int bufYosouKabuKa = v1 + v2 * 10 + v3 * 100 + v4 * 1000 + v5 * 10000;
 
@@ -284,7 +270,8 @@ public class MainActivity extends AppCompatActivity {
             setNumPickerKabuKa(bufYosouKabuKa); // 繰り上がり、下がりを反映させる
         }
 
-        mYosouKabuKa = bufYosouKabuKa;
+        //StockData.sYosouKabuKa = bufYosouKabuKa;
+        StockData.SetYosouKabuKa(bufYosouKabuKa);
 
         setYosouAll();
     }
@@ -298,7 +285,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.w( "DEBUG_DATA", "setYosouAll" );
 
-        long shutokuKabuKa,shutokuKabuSuu,yosouSoneki;
+        long yosouSoneki;
         long gensenChoushuu,yosouKingaku;
 
         /*
@@ -312,8 +299,12 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-        yosouSoneki = ( (long)mYosouKabuKa - (long)mShutokuKabuKa ) * (long)mShutokuKabuSuu;
-        yosouKingaku = (long)mYosouKabuKa * (long)mShutokuKabuSuu;
+        Log.w( "DEBUG_DATA", "StockData.sYosouKabuKa" + StockData.sYosouKabuKa);
+        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuKa" + StockData.sShutokuKabuKa);
+        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
+
+        yosouSoneki = ( (long)StockData.sYosouKabuKa - (long)StockData.sShutokuKabuKa ) * (long)StockData.sShutokuKabuSuu;
+        yosouKingaku = (long)StockData.sYosouKabuKa * (long)StockData.sShutokuKabuSuu;
         gensenChoushuu = yosouSoneki * 20 / 100;
         if(gensenChoushuu < 0) gensenChoushuu = 0;
 
@@ -331,10 +322,10 @@ public class MainActivity extends AppCompatActivity {
     public void setShutokuKingaku(){
         long kingaku;
 
-        if( mShutokuKabuKa == null || mShutokuKabuSuu == null ) return;
-        Log.w( "DEBUG_DATA", "mShutokuKabuKa" + mShutokuKabuKa);
-        Log.w( "DEBUG_DATA", "mShutokuKabuSuu" + mShutokuKabuSuu);
-        kingaku = (long)mShutokuKabuKa * (long)mShutokuKabuSuu;
+        if( StockData.sShutokuKabuKa == null || StockData.sShutokuKabuSuu == null ) return;
+        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuKa" + StockData.sShutokuKabuKa);
+        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
+        kingaku = (long)StockData.sShutokuKabuKa * (long)StockData.sShutokuKabuSuu;
         mTextShutokuKingaku.setText(costString(kingaku));
     }
 
@@ -344,8 +335,9 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param KabuKa 設定株価
      */
-    public void setNumPickerKabuKa(int KabuKa){
+    public static void setNumPickerKabuKa(int KabuKa){
 
+        Log.w( "DEBUG_DATA", "setNumPickerKabuKaaaaaaaaaaaaaaaaaaaaaaaaaaaaa KabuKa " + KabuKa);
         int KabuKaBuf;
         int num1 = 0,num2 = 0,num3 = 0,num4 = 0,num5 = 0;
 
@@ -427,24 +419,26 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.editShutokuKabuKa:
                     Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuKa" );
                     if( mEditShutokuKabuKa.getText().toString() !=null && mEditShutokuKabuKa.getText().toString().length() > 0 ) {
-                        mShutokuKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
+                        int shutokuKabuka = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
 
-                        if(mShutokuKabuKa > 100000){
-                            mShutokuKabuKa = 99999;
-                            mEditShutokuKabuKa.setText(mShutokuKabuKa.toString());
+                        if(shutokuKabuka > 100000){
+                            shutokuKabuka = 99999;
+                            mEditShutokuKabuKa.setText(shutokuKabuka);
                             showAlert("オーバーフロー","株価は99999まで設定可能です",mContext );
                             break;
                         }
 
-                        // 予想初期値セット
-                        mYosouKabuKa = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
                         // 取得株価のリアルタイム保存
-                        StockData.SetKabuKa(mYosouKabuKa);
-                        setNumPickerKabuKa(mYosouKabuKa);
+                        StockData.SetShutokuKabuKa(shutokuKabuka);
+
+                        // 予想初期値セット
+                        StockData.SetYosouKabuKa(shutokuKabuka);
+                        setNumPickerKabuKa(StockData.sYosouKabuKa);
                     }
                     else{
-                        mShutokuKabuKa = 0;
-                        mYosouKabuKa = 0;
+
+                        StockData.SetShutokuKabuKa(0);
+                        StockData.SetYosouKabuKa(0);
                         setYosouAll();
                     }
 
@@ -453,23 +447,21 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.editShutokuKabuSuu:
                     Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuSuu" );
                     if( mEditShutokuKabuSuu.getText().toString() !=null && mEditShutokuKabuSuu.getText().toString().length() > 0 ) {
-                        mShutokuKabuSuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
 
-                        Log.w( "DEBUG_DATA", "AERAAERA1 mShutokuKabuSuu" + mShutokuKabuSuu);
-                        if(mShutokuKabuSuu > 100000000){
-                            mShutokuKabuSuu = 99999999;
+                        Log.w( "DEBUG_DATA", "AERAAERA1 StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
+                        if(StockData.sShutokuKabuSuu > 100000000){
+                            StockData.sShutokuKabuSuu = 99999999;
                             Log.w( "DEBUG_DATA", "AERAAERA2");
-                            mEditShutokuKabuSuu.setText(mShutokuKabuSuu.toString());
+                            mEditShutokuKabuSuu.setText(StockData.sShutokuKabuSuu.toString());
                             showAlert("オーバーフロー","株数は999999999まで設定可能です",mContext);
                             break;
                         }
 
-                        mShutokuKabuSuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
                         // 取得株数のリアルタイム保存
-                        StockData.SetKabuSuu(mShutokuKabuSuu);
+                        StockData.SetShutokuKabuSuu(Integer.parseInt(mEditShutokuKabuSuu.getText().toString()));
 
                     }
-                    else mShutokuKabuSuu = 0;
+                    else StockData.sShutokuKabuSuu = 0;
                     setShutokuKingaku();
                     setYosouAll();
                     break;
