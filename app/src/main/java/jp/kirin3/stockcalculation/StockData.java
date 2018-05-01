@@ -90,17 +90,17 @@ public class StockData {
         sHitokabuHaitou = StockData.GetPreHitokabuHaitou(sUsingNo);
         sYosouNenSuu = StockData.GetPreYosouNenSuu(sUsingNo);
 
+        Log.w( "DEBUG_DATA", "sHitokabuHaitou " + sHitokabuHaitou);
+
         EditMeigara.setText(sMeigara);
-        if(sShutokuKabuKa != 0) EditShutokuKabuKa.setText(sShutokuKabuKa.toString()); // 初回登録、変更時に予想株価、ピッカーも変更されてしまう。
+        if(sShutokuKabuKa != 0) EditShutokuKabuKa.setText(sShutokuKabuKa.toString()); // ◇2初回登録、変更時に予想株価、ピッカーも変更されてしまう。
         else EditShutokuKabuKa.setText("");
         if(sShutokuKabuSuu != 0) EditShutokuKabuSuu.setText(sShutokuKabuSuu.toString());
         else EditShutokuKabuSuu.setText("");
-        if(sShutokuKabuSuu != 0) EditShutokuKabuSuu.setText(sShutokuKabuSuu.toString());
-        else EditShutokuKabuSuu.setText("");
-        if(sHitokabuHaitou != 0) EditShutokuKabuSuu.setText(sHitokabuHaitou.toString());
+        if(sHitokabuHaitou != 0) EditHitokabuHaitou.setText(sHitokabuHaitou.toString());
         else EditHitokabuHaitou.setText("");
 
-        // そのため保存しておいた予想損益で上書き
+        // ◇2そのため保存しておいた予想損益で上書き
         if(buf_sYosouKabuKa != 0) {
             SetYosouKabuKa(buf_sYosouKabuKa);
             MainActivity.setNumPickerKabuKa(buf_sYosouKabuKa);
@@ -169,7 +169,7 @@ public class StockData {
     }
 
     /*****
-     * 番号を指定して予想年数を取得
+     * 番号を指定して一株配当を取得
      * @param no 銘柄番号(0～)
      */
     public static Integer GetPreHitokabuHaitou(int no){
@@ -315,7 +315,11 @@ public class StockData {
         String key = PRE_HITOKABU_HAITOU + sUsingNo;
         CommonMng.setPrefInt(mContext,key,haitou);
 
+
+
         sHitokabuHaitou = haitou;
+
+        Log.w( "DEBUG_DATA", "sHitokabuHaitou SET " + sHitokabuHaitou);
     }
     /*****
      * 編集中の予想年数を変数とプリファランスに保存

@@ -188,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                     Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
                     Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
                     Integer buf_yosouKabuKa = StockData.GetPreYosouKabuKa(no);
+                    Integer hitokabuHaitou = StockData.GetPreHitokabuHaitou(no);
                     Integer yosouNenSuu = StockData.GetPreYosouNenSuu(no);
 
                     Log.w( "DEBUG_DATA", "HeaderSetText v.getId() = " + v.getId());
@@ -195,16 +196,22 @@ public class MainActivity extends AppCompatActivity {
                     Log.w( "DEBUG_DATA", "HeaderSetText yosouKabuka = " + buf_yosouKabuKa);
 
                     mEditMeigara.setText(meigara);
-                    if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // 初回登録、変更時に予想株価、ピッカーも変更されてしまう。
+                    if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // ◇1初回登録、変更時に予想株価、ピッカーも変更されてしまう。
                     else mEditShutokuKabuKa.setText("");
                     if(shutokuKabuSuu != 0) mEditShutokuKabuSuu.setText(shutokuKabuSuu.toString());
                     else mEditShutokuKabuSuu.setText("");
+                    if(hitokabuHaitou != 0) mEditHitokabuHaitou.setText(hitokabuHaitou.toString());
+                    else mEditHitokabuHaitou.setText("");
 
-                    // そのため保存しておいた予想損益で上書き
-                    if(buf_yosouKabuKa != 0) {
-                        StockData.SetYosouKabuKa(buf_yosouKabuKa);
-                        MainActivity.setNumPickerKabuKa(buf_yosouKabuKa);
-                    }
+                    // ◇1そのため保存しておいた予想損益で上書き
+                    StockData.SetYosouKabuKa(buf_yosouKabuKa);
+                    setNumPickerKabuKa(buf_yosouKabuKa);
+
+
+
+                    setNumPickerNenSuu(yosouNenSuu);
+
+
                     setYosouAll();
 
                     HeaderSetText();
@@ -313,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
 
         int YosouNenSuu = mNumPickerNenSuu.getValue();
 
-        StockData.SetYosouKabuKa(YosouNenSuu);
+        StockData.SetYosouNenSuu(YosouNenSuu);
         setYosouAll();
     }
 
@@ -499,7 +506,6 @@ public class MainActivity extends AppCompatActivity {
 
                         Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
                         if(StockData.sShutokuKabuSuu > 100000000){
-                            StockData.sShutokuKabuSuu = 99999999;
                             mEditShutokuKabuSuu.setText(StockData.sShutokuKabuSuu.toString());
                             showAlert("オーバーフロー","株数は999999999まで設定可能です",mContext);
                             break;
@@ -512,6 +518,29 @@ public class MainActivity extends AppCompatActivity {
                     else StockData.sShutokuKabuSuu = 0;
                     setShutokuKingaku();
                     setYosouAll();
+                    break;
+
+                case R.id.editHitokabuHaitou:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editHitokabuHaitou" );
+                    if( mEditHitokabuHaitou.getText().toString() !=null && mEditHitokabuHaitou.getText().toString().length() > 0 ) {
+                        int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou.getText().toString());
+
+                        if(hitokabuHaitou > 10000){
+                            mEditHitokabuHaitou.setText(StockData.sHitokabuHaitou.toString());
+                            showAlert("オーバーフロー","株価は9999まで設定可能です",mContext );
+                            break;
+                        }
+
+                        // 取得株価のリアルタイム保存
+                        StockData.SetHitokabuHaitou(hitokabuHaitou);
+                        setYosouAll();
+                    }
+                    else{
+
+                        StockData.SetHitokabuHaitou(0);
+                        setYosouAll();
+                    }
+
                     break;
             }
         }
