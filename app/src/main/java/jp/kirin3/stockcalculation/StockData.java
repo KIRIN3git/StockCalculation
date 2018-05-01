@@ -29,6 +29,12 @@ public class StockData {
     // 編集中予想株価
     public static Integer sYosouKabuKa;
 
+    // 編集中一株配当
+    public static Integer sHitokabuHaitou;
+
+    // 編集中予想年数
+    public static Integer sYosouNenSuu;
+
     // 最大銘柄登録数
     final static int SAVE_MAX_NUM = 20;
     // ユーザーの登録銘柄数
@@ -48,6 +54,12 @@ public class StockData {
     final static String PRE_SHUTOKU_KABU_SUU = "PRE_SHUTOKU_KABU_SUU_";
     // 予想株価 + i
     final static String PRE_YOSOU_KABU_KA = "PRE_YOSOU_KABU_KA_";
+
+    // 一株配当 + i
+    final static String PRE_HITOKABU_HAITOU = "PRE_HITOKABU_HAITOU_";
+    // 予想年数 + i
+    final static String PRE_YOSOU_NEN_SUU = "PRE_YOSOU_NEN_SUU_";
+
     // ユーザーの銘柄登録数
     final static String PRE_SAVE_NUM = "PRE_SAVE_NUM";
     // ユーザーの編集中銘柄番号
@@ -56,7 +68,7 @@ public class StockData {
 
 
 
-    public static void InitStockData(Context context, EditText EditMeigara,EditText EditShutokuKabuKa,EditText EditShutokuKabuSuu){
+    public static void InitStockData(Context context, EditText EditMeigara,EditText EditShutokuKabuKa,EditText EditShutokuKabuSuu,EditText EditHitokabuHaitou){
         mContext = context;
 
         sSaveNum = GetPreUsingNum(); //　登録数
@@ -75,12 +87,18 @@ public class StockData {
         sShutokuKabuSuu = StockData.GetPreShutokuKabuSuu(sUsingNo);
         Integer buf_sYosouKabuKa = StockData.GetPreYosouKabuKa(sUsingNo);
 
+        sHitokabuHaitou = StockData.GetPreHitokabuHaitou(sUsingNo);
+        sYosouNenSuu = StockData.GetPreYosouNenSuu(sUsingNo);
+
         EditMeigara.setText(sMeigara);
         if(sShutokuKabuKa != 0) EditShutokuKabuKa.setText(sShutokuKabuKa.toString()); // 初回登録、変更時に予想株価、ピッカーも変更されてしまう。
         else EditShutokuKabuKa.setText("");
         if(sShutokuKabuSuu != 0) EditShutokuKabuSuu.setText(sShutokuKabuSuu.toString());
         else EditShutokuKabuSuu.setText("");
-
+        if(sShutokuKabuSuu != 0) EditShutokuKabuSuu.setText(sShutokuKabuSuu.toString());
+        else EditShutokuKabuSuu.setText("");
+        if(sHitokabuHaitou != 0) EditShutokuKabuSuu.setText(sHitokabuHaitou.toString());
+        else EditHitokabuHaitou.setText("");
 
         // そのため保存しておいた予想損益で上書き
         if(buf_sYosouKabuKa != 0) {
@@ -88,6 +106,9 @@ public class StockData {
             MainActivity.setNumPickerKabuKa(buf_sYosouKabuKa);
         }
 
+        if( sYosouNenSuu != 0 ){
+            MainActivity.setNumPickerNenSuu(sYosouNenSuu);
+        }
     }
 
 
@@ -137,7 +158,6 @@ public class StockData {
         return kabusuu;
     }
 
-
     /*****
      * 番号を指定して予想株価を取得
      * @param no 銘柄番号(0～)
@@ -145,10 +165,26 @@ public class StockData {
     public static Integer GetPreYosouKabuKa(int no){
         String key = PRE_YOSOU_KABU_KA + no;
         Integer kabuka = CommonMng.getPrefInt(mContext,key);
-
-        Log.w( "DEBUG_DATA", "GetPreYosouKabuKa　PRE_YOSOU_KABU_KA　kabuka " + key + " " + kabuka);
-
         return kabuka;
+    }
+
+    /*****
+     * 番号を指定して予想年数を取得
+     * @param no 銘柄番号(0～)
+     */
+    public static Integer GetPreHitokabuHaitou(int no){
+        String key = PRE_HITOKABU_HAITOU + no;
+        Integer haitou = CommonMng.getPrefInt(mContext,key);
+        return haitou;
+    }
+    /*****
+     * 番号を指定して予想年数を取得
+     * @param no 銘柄番号(0～)
+     */
+    public static Integer GetPreYosouNenSuu(int no){
+        String key = PRE_YOSOU_NEN_SUU + no;
+        Integer nensuu = CommonMng.getPrefInt(mContext,key);
+        return nensuu;
     }
 
 
@@ -265,14 +301,30 @@ public class StockData {
      */
     public static void SetYosouKabuKa(int price){
         String key = PRE_YOSOU_KABU_KA + sUsingNo;
-
-        Log.w( "DEBUG_DATA", "SetYosouKabuKa PRE_YOSOU_KABU_KA　kabuka " + key + " " + price);
         CommonMng.setPrefInt(mContext,key,price);
 
         sYosouKabuKa = price;
-
-        Log.w( "DEBUG_DATA", "SetYosouKabuKa key " + key);
-        Log.w( "DEBUG_DATA", "SetYosouKabuKa data " + price);
     }
 
+
+    /*****
+     * 編集中の一株配当を変数とプリファランスに保存
+     * @param haitou 配当
+     */
+    public static void SetHitokabuHaitou(int haitou){
+        String key = PRE_HITOKABU_HAITOU + sUsingNo;
+        CommonMng.setPrefInt(mContext,key,haitou);
+
+        sHitokabuHaitou = haitou;
+    }
+    /*****
+     * 編集中の予想年数を変数とプリファランスに保存
+     * @param num 年数
+     */
+    public static void SetYosouNenSuu(int num){
+        String key = PRE_YOSOU_NEN_SUU + sUsingNo;
+        CommonMng.setPrefInt(mContext,key,num);
+
+        sYosouNenSuu = num;
+    }
 }

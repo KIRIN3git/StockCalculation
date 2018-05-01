@@ -35,7 +35,7 @@
                     android:textSize="20sp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="１株配当"/>
+                    android:text="一株配当"/>
                 <EditText
                     android:id="@+id/editHitokabuHaitou"
                     android:textStyle="bold"

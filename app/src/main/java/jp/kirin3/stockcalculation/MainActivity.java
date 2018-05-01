@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        StockData.InitStockData(mContext,mEditMeigara,mEditShutokuKabuKa,mEditShutokuKabuSuu);
+        StockData.InitStockData(mContext,mEditMeigara,mEditShutokuKabuKa,mEditShutokuKabuSuu,mEditHitokabuHaitou);
         setYosouAll();
     }
 
@@ -187,11 +187,12 @@ public class MainActivity extends AppCompatActivity {
                     String meigara = StockData.GetPreMeigara(no);
                     Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
                     Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
-                    Integer buf_sYosouKabuKa = StockData.GetPreYosouKabuKa(no);
+                    Integer buf_yosouKabuKa = StockData.GetPreYosouKabuKa(no);
+                    Integer yosouNenSuu = StockData.GetPreYosouNenSuu(no);
 
                     Log.w( "DEBUG_DATA", "HeaderSetText v.getId() = " + v.getId());
                     Log.w( "DEBUG_DATA", "HeaderSetText meigara = " + meigara);
-                    Log.w( "DEBUG_DATA", "HeaderSetText yosouKabuka = " + buf_sYosouKabuKa);
+                    Log.w( "DEBUG_DATA", "HeaderSetText yosouKabuka = " + buf_yosouKabuKa);
 
                     mEditMeigara.setText(meigara);
                     if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // 初回登録、変更時に予想株価、ピッカーも変更されてしまう。
@@ -200,9 +201,9 @@ public class MainActivity extends AppCompatActivity {
                     else mEditShutokuKabuSuu.setText("");
 
                     // そのため保存しておいた予想損益で上書き
-                    if(buf_sYosouKabuKa != 0) {
-                        StockData.SetYosouKabuKa(buf_sYosouKabuKa);
-                        MainActivity.setNumPickerKabuKa(buf_sYosouKabuKa);
+                    if(buf_yosouKabuKa != 0) {
+                        StockData.SetYosouKabuKa(buf_yosouKabuKa);
+                        MainActivity.setNumPickerKabuKa(buf_yosouKabuKa);
                     }
                     setYosouAll();
 
@@ -371,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * 予想株価数から、予想株価ナンバーピッカーを初期設定
+     * 予想株価から、予想株価ナンバーピッカーを初期設定
      *
      * @param KabuKa 設定株価
      */
@@ -426,6 +427,15 @@ public class MainActivity extends AppCompatActivity {
         mNumPickerKabuKa2.setValue(num2);
         mNumPickerKabuKa1.setValue(num1);
 
+    }
+
+    /**
+     * 予想年数から、予想年数ナンバーピッカーを初期設定
+     *
+     * @param NenSuu 予想年数
+     */
+    public static void setNumPickerNenSuu(int NenSuu){
+        mNumPickerNenSuu.setValue(NenSuu);
     }
 
     // EidtTextのイベントを取得
