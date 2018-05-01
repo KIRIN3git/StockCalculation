@@ -27,8 +27,13 @@ public class MainActivity extends AppCompatActivity {
     private static LinearLayout mLlScroll;
     private static TextView mTextAdd,mTextReset;
     private static EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
-    private static TextView mTextShutokuKingaku, mTextYosouSoneki, mTextYosouKingaku, mTextGensenChouShuu;
+    private static EditText mEditHitokabuHaitou;
+    private static TextView mTextShutokuKingaku;
+    private static TextView mTextYosouSonekiP, mTextYosouKingakuP, mTextYosouGencyouP;
+    private static TextView mTextYosouSonekiD, mTextYosouKingakuD, mTextYosouGencyouD;
+    private static TextView mTextYosouSonekiT, mTextYosouKingakuT, mTextYosouGencyouT;
     private static CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
+    private static CustomNumberPicker mNumPickerNenSuu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,28 +51,39 @@ public class MainActivity extends AppCompatActivity {
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
         mEditShutokuKabuSuu = (EditText) findViewById(R.id.editShutokuKabuSuu);
+        mEditHitokabuHaitou = (EditText) findViewById(R.id.editHitokabuHaitou);
 
         mEditMeigara.addTextChangedListener(new GenericTextWatcher(mEditMeigara));
         mEditShutokuKabuKa.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuKa));
         mEditShutokuKabuSuu.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuSuu));
+        mEditHitokabuHaitou.addTextChangedListener(new GenericTextWatcher(mEditHitokabuHaitou));
 
         mNumPickerKabuKa1 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa1);
         mNumPickerKabuKa2 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa2);
         mNumPickerKabuKa3 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa3);
         mNumPickerKabuKa4 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa4);
         mNumPickerKabuKa5 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa5);
+        mNumPickerNenSuu = (CustomNumberPicker) findViewById(R.id.numPickerNensuu);
 
         mNumPickerKabuKa1.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         mNumPickerKabuKa2.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         mNumPickerKabuKa3.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         mNumPickerKabuKa4.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
         mNumPickerKabuKa5.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
+        mNumPickerNenSuu.setDescendantFocusability(ViewGroup.FOCUS_BLOCK_DESCENDANTS);
 
         mTextShutokuKingaku = (TextView) findViewById(R.id.textShutokuKingaku);
-        mTextYosouSoneki = (TextView) findViewById(R.id.textYosouSonekiP);
-        mTextYosouKingaku = (TextView) findViewById(R.id.textYosouKingakuP);
-        mTextGensenChouShuu = (TextView) findViewById(R.id.textGensenChoshuuP);
+        mTextYosouSonekiP = (TextView) findViewById(R.id.textYosouSonekiP);
+        mTextYosouKingakuP = (TextView) findViewById(R.id.textYosouKingakuP);
+        mTextYosouGencyouP = (TextView) findViewById(R.id.textYosouGencyouP);
 
+        mTextYosouSonekiD = (TextView) findViewById(R.id.textYosouSonekiD);
+        mTextYosouKingakuD = (TextView) findViewById(R.id.textYosouKingakuD);
+        mTextYosouGencyouD = (TextView) findViewById(R.id.textYosouGencyouD);
+
+        mTextYosouSonekiT = (TextView) findViewById(R.id.textYosouSonekiT);
+        mTextYosouKingakuT = (TextView) findViewById(R.id.textYosouKingakuT);
+        mTextYosouGencyouT = (TextView) findViewById(R.id.textYosouGencyouT);
 
         // ヘッダーに銘柄を設定
         HeaderSetText();
@@ -171,17 +187,24 @@ public class MainActivity extends AppCompatActivity {
                     String meigara = StockData.GetPreMeigara(no);
                     Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
                     Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
-                    Integer yosouKabuka = StockData.GetPreYosouKabuKa(no);
+                    Integer buf_sYosouKabuKa = StockData.GetPreYosouKabuKa(no);
 
-                    Log.w( "DEBUG_DATA", "v.getId() = " + v.getId());
-                    Log.w( "DEBUG_DATA", "meigara = " + meigara);
+                    Log.w( "DEBUG_DATA", "HeaderSetText v.getId() = " + v.getId());
+                    Log.w( "DEBUG_DATA", "HeaderSetText meigara = " + meigara);
+                    Log.w( "DEBUG_DATA", "HeaderSetText yosouKabuka = " + buf_sYosouKabuKa);
 
                     mEditMeigara.setText(meigara);
-                    if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString());
+                    if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // 初回登録、変更時に予想株価、ピッカーも変更されてしまう。
                     else mEditShutokuKabuKa.setText("");
                     if(shutokuKabuSuu != 0) mEditShutokuKabuSuu.setText(shutokuKabuSuu.toString());
                     else mEditShutokuKabuSuu.setText("");
-                    setNumPickerKabuKa(yosouKabuka);
+
+                    // そのため保存しておいた予想損益で上書き
+                    if(buf_sYosouKabuKa != 0) {
+                        StockData.SetYosouKabuKa(buf_sYosouKabuKa);
+                        MainActivity.setNumPickerKabuKa(buf_sYosouKabuKa);
+                    }
+                    setYosouAll();
 
                     HeaderSetText();
                 }
@@ -202,48 +225,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getChangeNumberPicker() {
-
         // ナンバーピッカーの変更を受け取るリスナー
         mNumPickerKabuKa1.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                exeChangeNumPicker(1,oldVal,newVal);
+                exeChangeNumPickerYosouKabuka(1,oldVal,newVal);
             }
         });
         mNumPickerKabuKa2.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                exeChangeNumPicker(2,oldVal,newVal);
+                exeChangeNumPickerYosouKabuka(2,oldVal,newVal);
             }
         });
         mNumPickerKabuKa3.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                exeChangeNumPicker(3,oldVal,newVal);
+                exeChangeNumPickerYosouKabuka(3,oldVal,newVal);
             }
         });
         mNumPickerKabuKa4.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                exeChangeNumPicker(4,oldVal,newVal);
+                exeChangeNumPickerYosouKabuka(4,oldVal,newVal);
             }
         });
         mNumPickerKabuKa5.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
             @Override
             public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                exeChangeNumPicker(5,oldVal,newVal);
+                exeChangeNumPickerYosouKabuka(5,oldVal,newVal);
+            }
+        });
+
+        mNumPickerNenSuu.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                exeChangeNumPickerYosouNenSuu();
             }
         });
     }
 
     /***
-     * ナンバーピッカーが動いた時の処理
+     * 予想株価ナンバーピッカーが動いた時の処理
      *
      * @param no
      * @param oldVal
      * @param newVal
      */
-    public void exeChangeNumPicker(int no,int oldVal,int newVal ){
+    public void exeChangeNumPickerYosouKabuka(int no, int oldVal, int newVal ){
 
         int v1 = mNumPickerKabuKa1.getValue();
         int v2 = mNumPickerKabuKa2.getValue();
@@ -270,9 +299,20 @@ public class MainActivity extends AppCompatActivity {
             setNumPickerKabuKa(bufYosouKabuKa); // 繰り上がり、下がりを反映させる
         }
 
-        //StockData.sYosouKabuKa = bufYosouKabuKa;
         StockData.SetYosouKabuKa(bufYosouKabuKa);
 
+        setYosouAll();
+    }
+
+
+    /***
+     * 年数ナンバーピッカーが動いた時の処理
+     */
+    public void exeChangeNumPickerYosouNenSuu( ){
+
+        int YosouNenSuu = mNumPickerNenSuu.getValue();
+
+        StockData.SetYosouKabuKa(YosouNenSuu);
         setYosouAll();
     }
 
@@ -292,9 +332,9 @@ public class MainActivity extends AppCompatActivity {
         // 株価を入力していなければ表示しない
         if( ( mEditShutokuKabuKa.getText().toString() == null || mEditShutokuKabuKa.getText().toString().length() < 1 ) ||
                 ( mEditShutokuKabuSuu.getText().toString() == null || mEditShutokuKabuSuu.getText().toString().length() < 1 ) ){
-            mTextYosouSoneki.setText("0");
-            mTextYosouKingaku.setText("0");
-            mTextGensenChouShuu.setText("0");
+            mTextYosouSonekiP.setText("0");
+            mTextYosouKingakuP.setText("0");
+            mTextYosouGencyouP.setText("0");
             return;
         }
         */
@@ -308,12 +348,12 @@ public class MainActivity extends AppCompatActivity {
         gensenChoushuu = yosouSoneki * 20 / 100;
         if(gensenChoushuu < 0) gensenChoushuu = 0;
 
-        mTextYosouSoneki.setText(costString(yosouSoneki));
-        if(yosouSoneki == 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.gray));
-        else if(yosouSoneki >= 0) mTextYosouSoneki.setTextColor(getResources().getColor(R.color.red));
-        else mTextYosouSoneki.setTextColor(getResources().getColor(R.color.blue));
-        mTextYosouKingaku.setText(costString(yosouKingaku));
-        mTextGensenChouShuu.setText(costString(gensenChoushuu));
+        mTextYosouSonekiP.setText(costString(yosouSoneki));
+        if(yosouSoneki == 0) mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.gray));
+        else if(yosouSoneki >= 0) mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.red));
+        else mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.blue));
+        mTextYosouKingakuP.setText(costString(yosouKingaku));
+        mTextYosouGencyouP.setText(costString(gensenChoushuu));
     }
 
     /**
@@ -388,7 +428,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-
     // EidtTextのイベントを取得
     public class GenericTextWatcher implements TextWatcher {
 
@@ -448,10 +487,9 @@ public class MainActivity extends AppCompatActivity {
                     Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuSuu" );
                     if( mEditShutokuKabuSuu.getText().toString() !=null && mEditShutokuKabuSuu.getText().toString().length() > 0 ) {
 
-                        Log.w( "DEBUG_DATA", "AERAAERA1 StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
+                        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
                         if(StockData.sShutokuKabuSuu > 100000000){
                             StockData.sShutokuKabuSuu = 99999999;
-                            Log.w( "DEBUG_DATA", "AERAAERA2");
                             mEditShutokuKabuSuu.setText(StockData.sShutokuKabuSuu.toString());
                             showAlert("オーバーフロー","株数は999999999まで設定可能です",mContext);
                             break;

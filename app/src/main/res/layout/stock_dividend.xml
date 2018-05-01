@@ -23,12 +23,35 @@
             android:orientation="vertical">
 
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
+                <TextView
+                    android:gravity="center"
+                    android:textSize="20sp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="１株配当"/>
+                <EditText
+                    android:id="@+id/editHitokabuHaitou"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_margin="10dp"
-                android:text="予想株価"
+                android:text="予想年数"
                 android:textSize="20sp" />
 
             <jp.kirin3.stockcalculation.CustomNumberPicker xmlns:custom="http://schemas.android.com/apk/res-auto"
@@ -97,9 +120,9 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="源泉徴収"/>
+                android:text="予想源徴"/>
             <TextView
-                android:id="@+id/textGensenChoshuuD"
+                android:id="@+id/textYosouGencyouD"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -27,7 +27,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想合計損益"/>
+                android:text="合計予想損益"/>
             <TextView
                 android:id="@+id/textYosouSonekiT"
                 android:gravity="center"
@@ -49,7 +49,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想合計金額"/>
+                android:text="合計予想金額"/>
             <TextView
                 android:id="@+id/textYosouKingakuT"
                 android:gravity="center"
@@ -71,9 +71,9 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="合計源泉徴収"/>
+                android:text="合計予想源徴"/>
             <TextView
-                android:id="@+id/textGensenChoshuuT"
+                android:id="@+id/textYosouGencyouT"
                 android:gravity="center"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -270,8 +270,9 @@ public class StockData {
         CommonMng.setPrefInt(mContext,key,price);
 
         sYosouKabuKa = price;
-        Log.w( "DEBUG_DATA", "key " + key);
-        Log.w( "DEBUG_DATA", "data " + price);
+
+        Log.w( "DEBUG_DATA", "SetYosouKabuKa key " + key);
+        Log.w( "DEBUG_DATA", "SetYosouKabuKa data " + price);
     }
 
 }
