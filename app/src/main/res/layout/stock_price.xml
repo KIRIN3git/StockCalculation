@@ -10,97 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <TextView
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="　銘柄　"/>
-            <EditText
-                android:id="@+id/editMeigara"
-                android:textStyle="bold"
-                android:layout_weight="1"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:inputType="text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <TextView
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="取得株価"/>
-            <EditText
-                android:id="@+id/editShutokuKabuKa"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:inputType="number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <TextView
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="取得株数"/>
-            <EditText
-                android:id="@+id/editShutokuKabuSuu"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:inputType="number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <TextView
-                android:gravity="center"
-                android:textSize="20sp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="取得金額"/>
-            <TextView
-                android:id="@+id/textShutokuKingaku"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:gravity="center"
-                android:inputType="number"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
-
         <View
             android:layout_width="fill_parent"
             android:layout_marginTop="10dp"
@@ -242,7 +151,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想損益"/>
+                android:text="譲渡損益"/>
             <TextView
                 android:id="@+id/textYosouSonekiP"
                 android:gravity="center"
@@ -264,7 +173,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想金額"/>
+                android:text="譲渡金額"/>
             <TextView
                 android:id="@+id/textYosouKingakuP"
                 android:gravity="center"
@@ -286,7 +195,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想源徴"/>
+                android:text="譲渡源徴"/>
             <TextView
                 android:id="@+id/textYosouGencyouP"
                 android:gravity="center"
@@ -295,6 +204,7 @@
                 android:textSize="20sp"
                 tools:text="0"/>
         </LinearLayout>
+
 
 
     </LinearLayout>

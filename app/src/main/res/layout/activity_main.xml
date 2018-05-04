@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     tools:context="jp.kirin3.stockcalculation.MainActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
+            android:id="@+id/layoutHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/pBlue2"
@@ -45,12 +47,18 @@
         </LinearLayout>
 
         <ScrollView
-            android:layout_width="wrap_content"
+            android:layout_below="@id/layoutHeader"
+            android:layout_above="@id/layoutFooter"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout
                 android:orientation="vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/stock_data_id"
+                    layout="@layout/stock_data" />
 
                 <include
                     android:id="@+id/stock_price_id"
@@ -67,7 +75,21 @@
             </LinearLayout>
 
         </ScrollView>
-    </LinearLayout>
 
+        <LinearLayout xmlns:ads="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/layoutFooter"
+            android:layout_alignParentBottom="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="visible">
+
+            <com.google.android.gms.ads.AdView
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id_main"></com.google.android.gms.ads.AdView>
+        </LinearLayout>
+    </RelativeLayout>
 
 </android.support.constraint.ConstraintLayout>

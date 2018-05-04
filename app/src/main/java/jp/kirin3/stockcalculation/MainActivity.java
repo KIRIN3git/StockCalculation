@@ -16,6 +16,11 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import static jp.kirin3.stockcalculation.CommonMng.DpToPx2;
 import static jp.kirin3.stockcalculation.CommonMng.costString;
 import static jp.kirin3.stockcalculation.CommonMng.showAlert;
@@ -34,6 +39,12 @@ public class MainActivity extends AppCompatActivity {
     private static TextView mTextYosouSonekiT, mTextYosouKingakuT, mTextYosouGencyouT;
     private static CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
     private static CustomNumberPicker mNumPickerNenSuu;
+
+    private FirebaseAnalytics mFirebaseAnalytics;
+
+
+    // Firebase
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,6 +136,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         getChangeNumberPicker();
+
+        ///////////// 〇Firebase
+        // addMob設定
+        MobileAds.initialize(this,getResources().getString(R.string.admob_app_id) );
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+        // Event
+        // Obtain the FirebaseAnalytics instance.
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
@@ -175,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
             layoutParams.setMargins(0, margin_px, margin_px, margin_px);
             tv.setLayoutParams(layoutParams);
 
+            // 〇タブを切り替えた時の処理
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,10 +229,8 @@ public class MainActivity extends AppCompatActivity {
                     StockData.SetYosouKabuKa(buf_yosouKabuKa);
                     setNumPickerKabuKa(buf_yosouKabuKa);
 
-
-
+                    StockData.SetYosouNenSuu(yosouNenSuu);
                     setNumPickerNenSuu(yosouNenSuu);
-
 
                     setYosouAll();
 
@@ -333,8 +353,9 @@ public class MainActivity extends AppCompatActivity {
 
         Log.w( "DEBUG_DATA", "setYosouAll" );
 
-        long yosouSoneki;
-        long gensenChoushuu,yosouKingaku;
+        long yosouSonekiP,yosouKingakuP,yosouGencyouP;
+        long yosouSonekiD,yosouKingakuD,yosouGencyouD;
+        long yosouSonekiT,yosouKingakuT,yosouGencyouT;
 
         /*
         // 株価を入力していなければ表示しない
@@ -351,30 +372,56 @@ public class MainActivity extends AppCompatActivity {
         Log.w( "DEBUG_DATA", "StockData.sShutokuKabuKa" + StockData.sShutokuKabuKa);
         Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
 
-        yosouSoneki = ( (long)StockData.sYosouKabuKa - (long)StockData.sShutokuKabuKa ) * (long)StockData.sShutokuKabuSuu;
-        yosouKingaku = (long)StockData.sYosouKabuKa * (long)StockData.sShutokuKabuSuu;
-        gensenChoushuu = yosouSoneki * 20 / 100;
-        if(gensenChoushuu < 0) gensenChoushuu = 0;
+        yosouSonekiP = ( (long)StockData.sYosouKabuKa - (long)StockData.sShutokuKabuKa ) * (long)StockData.sShutokuKabuSuu;
+        yosouKingakuP = (long)StockData.sYosouKabuKa * (long)StockData.sShutokuKabuSuu;
+        yosouGencyouP = yosouSonekiP * 20 / 100;
+        if(yosouGencyouP < 0) yosouGencyouP = 0;
 
-        mTextYosouSonekiP.setText(costString(yosouSoneki));
-        if(yosouSoneki == 0) mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.gray));
-        else if(yosouSoneki >= 0) mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.red));
+        mTextYosouSonekiP.setText(costString(yosouSonekiP));
+        if(yosouSonekiP == 0) mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.gray));
+        else if(yosouSonekiP >= 0) mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.red));
         else mTextYosouSonekiP.setTextColor(getResources().getColor(R.color.blue));
-        mTextYosouKingakuP.setText(costString(yosouKingaku));
-        mTextYosouGencyouP.setText(costString(gensenChoushuu));
+        mTextYosouKingakuP.setText(costString(yosouKingakuP));
+        mTextYosouGencyouP.setText(costString(yosouGencyouP));
+
+        yosouSonekiD = (long)StockData.sHitokabuHaitou * (long)StockData.sYosouNenSuu *(long)StockData.sShutokuKabuSuu;
+        yosouKingakuD = StockData.sShutokuKingaku + yosouSonekiD;
+        yosouGencyouD = yosouSonekiD * 20 / 100;
+
+        Log.w( "DEBUG_DATA", "eeeee StockData.sHitokabuHaitou " + StockData.sHitokabuHaitou);
+        Log.w( "DEBUG_DATA", "eeeee StockData.sYosouNenSuu " + StockData.sYosouNenSuu);
+        Log.w( "DEBUG_DATA", "eeeee StockData.sShutokuKabuSuu " + StockData.sShutokuKabuSuu);
+
+        mTextYosouSonekiD.setText(costString(yosouSonekiD));
+        if(yosouSonekiP == 0) mTextYosouSonekiD.setTextColor(getResources().getColor(R.color.gray));
+        else mTextYosouSonekiD.setTextColor(getResources().getColor(R.color.red));
+        mTextYosouKingakuD.setText(costString(yosouKingakuD));
+        mTextYosouGencyouD.setText(costString(yosouGencyouD));
+
+        yosouSonekiT = yosouSonekiP + yosouSonekiD;
+        yosouKingakuT = StockData.sShutokuKingaku + yosouSonekiT;
+        yosouGencyouT = yosouSonekiT * 20 /100;
+        if(yosouGencyouT < 0) yosouGencyouT = 0;
+
+        mTextYosouSonekiT.setText(costString(yosouSonekiT));
+        if(yosouSonekiT == 0) mTextYosouSonekiT.setTextColor(getResources().getColor(R.color.gray));
+        else if(yosouSonekiT >= 0) mTextYosouSonekiT.setTextColor(getResources().getColor(R.color.red));
+        else mTextYosouSonekiT.setTextColor(getResources().getColor(R.color.blue));
+        mTextYosouKingakuT.setText(costString(yosouKingakuT));
+        mTextYosouGencyouT.setText(costString(yosouGencyouT));
+
     }
 
     /**
      * 取得株価、取得株数から取得金額を表示
      */
     public void setShutokuKingaku(){
-        long kingaku;
 
         if( StockData.sShutokuKabuKa == null || StockData.sShutokuKabuSuu == null ) return;
         Log.w( "DEBUG_DATA", "StockData.sShutokuKabuKa" + StockData.sShutokuKabuKa);
         Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
-        kingaku = (long)StockData.sShutokuKabuKa * (long)StockData.sShutokuKabuSuu;
-        mTextShutokuKingaku.setText(costString(kingaku));
+        StockData.sShutokuKingaku = (long)StockData.sShutokuKabuKa * (long)StockData.sShutokuKabuSuu;
+        mTextShutokuKingaku.setText(costString(StockData.sShutokuKingaku));
     }
 
 
@@ -479,7 +526,9 @@ public class MainActivity extends AppCompatActivity {
 
                         if(shutokuKabuka > 100000){
                             shutokuKabuka = 99999;
-                            mEditShutokuKabuKa.setText(shutokuKabuka);
+                            mEditShutokuKabuKa.setText(String.valueOf(shutokuKabuka));
+                            // 取得株価のリアルタイム保存
+                            StockData.SetShutokuKabuKa(shutokuKabuka);
                             showAlert("オーバーフロー","株価は99999まで設定可能です",mContext );
                             break;
                         }
@@ -503,11 +552,13 @@ public class MainActivity extends AppCompatActivity {
                 case R.id.editShutokuKabuSuu:
                     Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuSuu" );
                     if( mEditShutokuKabuSuu.getText().toString() !=null && mEditShutokuKabuSuu.getText().toString().length() > 0 ) {
+                        int shutokuKabusuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
 
                         Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
-                        if(StockData.sShutokuKabuSuu > 100000000){
-                            mEditShutokuKabuSuu.setText(StockData.sShutokuKabuSuu.toString());
-                            showAlert("オーバーフロー","株数は999999999まで設定可能です",mContext);
+                        if(shutokuKabusuu > 10000000){
+                            shutokuKabusuu = 9999999;
+                            mEditShutokuKabuSuu.setText(String.valueOf(shutokuKabusuu));
+                            showAlert("オーバーフロー","株数は9999999まで設定可能です",mContext);
                             break;
                         }
 
@@ -526,7 +577,8 @@ public class MainActivity extends AppCompatActivity {
                         int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou.getText().toString());
 
                         if(hitokabuHaitou > 10000){
-                            mEditHitokabuHaitou.setText(StockData.sHitokabuHaitou.toString());
+                            hitokabuHaitou = 9999;
+                            mEditHitokabuHaitou.setText(String.valueOf(hitokabuHaitou));
                             showAlert("オーバーフロー","株価は9999まで設定可能です",mContext );
                             break;
                         }

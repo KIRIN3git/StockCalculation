@@ -23,28 +23,7 @@
             android:orientation="vertical">
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
-                <TextView
-                    android:gravity="center"
-                    android:textSize="20sp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="一株配当"/>
-                <EditText
-                    android:id="@+id/editHitokabuHaitou"
-                    android:textStyle="bold"
-                    android:textSize="20sp"
-                    android:gravity="center"
-                    android:inputType="number"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
@@ -76,7 +55,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想損益"/>
+                android:text="配当損益"/>
             <TextView
                 android:id="@+id/textYosouSonekiD"
                 android:gravity="center"
@@ -98,7 +77,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想金額"/>
+                android:text="配当金額"/>
             <TextView
                 android:id="@+id/textYosouKingakuD"
                 android:gravity="center"
@@ -120,7 +99,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="予想源徴"/>
+                android:text="配当源徴"/>
             <TextView
                 android:id="@+id/textYosouGencyouD"
                 android:gravity="center"

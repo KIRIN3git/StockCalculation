@@ -35,6 +35,9 @@ public class StockData {
     // 編集中予想年数
     public static Integer sYosouNenSuu;
 
+    // 表示中取得金額
+    public static Long sShutokuKingaku;
+
     // 最大銘柄登録数
     final static int SAVE_MAX_NUM = 20;
     // ユーザーの登録銘柄数
@@ -86,6 +89,7 @@ public class StockData {
         sShutokuKabuKa= StockData.GetPreShutokuKabuKa(sUsingNo);
         sShutokuKabuSuu = StockData.GetPreShutokuKabuSuu(sUsingNo);
         Integer buf_sYosouKabuKa = StockData.GetPreYosouKabuKa(sUsingNo);
+        sShutokuKingaku = (long)sShutokuKabuKa * (long)sShutokuKabuSuu;
 
         sHitokabuHaitou = StockData.GetPreHitokabuHaitou(sUsingNo);
         sYosouNenSuu = StockData.GetPreYosouNenSuu(sUsingNo);
