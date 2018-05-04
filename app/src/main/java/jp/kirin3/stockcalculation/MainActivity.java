@@ -21,6 +21,8 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.MobileAds;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import java.math.BigDecimal;
+
 import static jp.kirin3.stockcalculation.CommonMng.DpToPx2;
 import static jp.kirin3.stockcalculation.CommonMng.costString;
 import static jp.kirin3.stockcalculation.CommonMng.showAlert;
@@ -32,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private static LinearLayout mLlScroll;
     private static TextView mTextAdd,mTextReset;
     private static EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
-    private static EditText mEditHitokabuHaitou;
+    private static EditText mEditHitokabuHaitou1,mEditHitokabuHaitou2;
     private static TextView mTextShutokuKingaku;
     private static TextView mTextYosouSonekiP, mTextYosouKingakuP, mTextYosouGencyouP;
     private static TextView mTextYosouSonekiD, mTextYosouKingakuD, mTextYosouGencyouD;
@@ -62,12 +64,14 @@ public class MainActivity extends AppCompatActivity {
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
         mEditShutokuKabuSuu = (EditText) findViewById(R.id.editShutokuKabuSuu);
-        mEditHitokabuHaitou = (EditText) findViewById(R.id.editHitokabuHaitou);
+        mEditHitokabuHaitou1 = (EditText) findViewById(R.id.editHitokabuHaitou1);
+        mEditHitokabuHaitou2 = (EditText) findViewById(R.id.editHitokabuHaitou2);
 
         mEditMeigara.addTextChangedListener(new GenericTextWatcher(mEditMeigara));
         mEditShutokuKabuKa.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuKa));
         mEditShutokuKabuSuu.addTextChangedListener(new GenericTextWatcher(mEditShutokuKabuSuu));
-        mEditHitokabuHaitou.addTextChangedListener(new GenericTextWatcher(mEditHitokabuHaitou));
+        mEditHitokabuHaitou1.addTextChangedListener(new GenericTextWatcher(mEditHitokabuHaitou1));
+        mEditHitokabuHaitou2.addTextChangedListener(new GenericTextWatcher(mEditHitokabuHaitou2));
 
         mNumPickerKabuKa1 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa1);
         mNumPickerKabuKa2 = (CustomNumberPicker) findViewById(R.id.numPickerKabuKa2);
@@ -152,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        StockData.InitStockData(mContext,mEditMeigara,mEditShutokuKabuKa,mEditShutokuKabuSuu,mEditHitokabuHaitou);
+        StockData.InitStockData(mContext,mEditMeigara,mEditShutokuKabuKa,mEditShutokuKabuSuu,mEditHitokabuHaitou1,mEditHitokabuHaitou2);
         setYosouAll();
     }
 
@@ -210,7 +214,8 @@ public class MainActivity extends AppCompatActivity {
                     Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
                     Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
                     Integer buf_yosouKabuKa = StockData.GetPreYosouKabuKa(no);
-                    Integer hitokabuHaitou = StockData.GetPreHitokabuHaitou(no);
+                    Integer hitokabuHaitou1 = StockData.GetPreHitokabuHaitou1(no);
+                    Integer hitokabuHaitou2 = StockData.GetPreHitokabuHaitou2(no);
                     Integer yosouNenSuu = StockData.GetPreYosouNenSuu(no);
 
                     Log.w( "DEBUG_DATA", "HeaderSetText v.getId() = " + v.getId());
@@ -222,8 +227,10 @@ public class MainActivity extends AppCompatActivity {
                     else mEditShutokuKabuKa.setText("");
                     if(shutokuKabuSuu != 0) mEditShutokuKabuSuu.setText(shutokuKabuSuu.toString());
                     else mEditShutokuKabuSuu.setText("");
-                    if(hitokabuHaitou != 0) mEditHitokabuHaitou.setText(hitokabuHaitou.toString());
-                    else mEditHitokabuHaitou.setText("");
+                    if(hitokabuHaitou1 != 0) mEditHitokabuHaitou1.setText(hitokabuHaitou1.toString());
+                    else mEditHitokabuHaitou1.setText("");
+                    if(hitokabuHaitou2 != 0) mEditHitokabuHaitou2.setText(hitokabuHaitou2.toString());
+                    else mEditHitokabuHaitou2.setText("");
 
                     // ◇1そのため保存しておいた予想損益で上書き
                     StockData.SetYosouKabuKa(buf_yosouKabuKa);
@@ -384,11 +391,32 @@ public class MainActivity extends AppCompatActivity {
         mTextYosouKingakuP.setText(costString(yosouKingakuP));
         mTextYosouGencyouP.setText(costString(yosouGencyouP));
 
-        yosouSonekiD = (long)StockData.sHitokabuHaitou * (long)StockData.sYosouNenSuu *(long)StockData.sShutokuKabuSuu;
+        yosouSonekiD = (long)StockData.sHitokabuHaitou1 * (long)StockData.sYosouNenSuu *(long)StockData.sShutokuKabuSuu;
+        // 小数点以下を計算
+        if(StockData.sHitokabuHaitou2 != 0){
+            double waru;
+            if(StockData.sHitokabuHaitou2 < 10){
+                waru = 10.0;
+            }
+            else{
+                waru = 100.0;
+            }
+
+            double buf = (double)StockData.sHitokabuHaitou2  * (double)StockData.sYosouNenSuu * (double)StockData.sShutokuKabuSuu / waru;
+            BigDecimal bd = new BigDecimal(buf);
+            bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
+            double buf2 = bd.doubleValue();
+
+            yosouSonekiD += buf2;
+            Log.w( "DEBUG_DATA", "wwwwwww buf " + buf);
+            Log.w( "DEBUG_DATA", "wwwwwww buf2 " + buf2);
+            Log.w( "DEBUG_DATA", "wwwwwww yosouSonekiD " + yosouSonekiD);
+        }
+
         yosouKingakuD = StockData.sShutokuKingaku + yosouSonekiD;
         yosouGencyouD = yosouSonekiD * 20 / 100;
 
-        Log.w( "DEBUG_DATA", "eeeee StockData.sHitokabuHaitou " + StockData.sHitokabuHaitou);
+        Log.w( "DEBUG_DATA", "eeeee StockData.sHitokabuHaitou1 " + StockData.sHitokabuHaitou1);
         Log.w( "DEBUG_DATA", "eeeee StockData.sYosouNenSuu " + StockData.sYosouNenSuu);
         Log.w( "DEBUG_DATA", "eeeee StockData.sShutokuKabuSuu " + StockData.sShutokuKabuSuu);
 
@@ -571,29 +599,53 @@ public class MainActivity extends AppCompatActivity {
                     setYosouAll();
                     break;
 
-                case R.id.editHitokabuHaitou:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editHitokabuHaitou" );
-                    if( mEditHitokabuHaitou.getText().toString() !=null && mEditHitokabuHaitou.getText().toString().length() > 0 ) {
-                        int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou.getText().toString());
+                case R.id.editHitokabuHaitou1:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editHitokabuHaitou1" );
+                    if( mEditHitokabuHaitou1.getText().toString() !=null && mEditHitokabuHaitou1.getText().toString().length() > 0 ) {
+                        int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou1.getText().toString());
 
                         if(hitokabuHaitou > 10000){
                             hitokabuHaitou = 9999;
-                            mEditHitokabuHaitou.setText(String.valueOf(hitokabuHaitou));
-                            showAlert("オーバーフロー","株価は9999まで設定可能です",mContext );
+                            mEditHitokabuHaitou1.setText(String.valueOf(hitokabuHaitou));
+                            showAlert("オーバーフロー","一株配当は9999まで設定可能です",mContext );
                             break;
                         }
 
                         // 取得株価のリアルタイム保存
-                        StockData.SetHitokabuHaitou(hitokabuHaitou);
+                        StockData.SetHitokabuHaitou1(hitokabuHaitou);
                         setYosouAll();
                     }
                     else{
 
-                        StockData.SetHitokabuHaitou(0);
+                        StockData.SetHitokabuHaitou1(0);
                         setYosouAll();
                     }
 
                     break;
+                case R.id.editHitokabuHaitou2:
+                    Log.w( "DEBUG_DATA", "afterTextChanged editHitokabuHaitou2" );
+                    if( mEditHitokabuHaitou2.getText().toString() !=null && mEditHitokabuHaitou2.getText().toString().length() > 0 ) {
+                        int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou2.getText().toString());
+
+                        if(hitokabuHaitou > 100){
+                            hitokabuHaitou = 99;
+                            mEditHitokabuHaitou2.setText(String.valueOf(hitokabuHaitou));
+                            showAlert("オーバーフロー","99まで設定可能です",mContext );
+                            break;
+                        }
+
+                        // 取得株価のリアルタイム保存
+                        StockData.SetHitokabuHaitou2(hitokabuHaitou);
+                        setYosouAll();
+                    }
+                    else{
+
+                        StockData.SetHitokabuHaitou2(0);
+                        setYosouAll();
+                    }
+
+                    break;
+
             }
         }
     }

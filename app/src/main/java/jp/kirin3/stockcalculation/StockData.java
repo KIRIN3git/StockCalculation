@@ -29,8 +29,11 @@ public class StockData {
     // 編集中予想株価
     public static Integer sYosouKabuKa;
 
-    // 編集中一株配当
-    public static Integer sHitokabuHaitou;
+    // 編集中一株配当 整数部分
+    public static Integer sHitokabuHaitou1;
+
+    // 編集中一株配当 小数点部分
+    public static Integer sHitokabuHaitou2;
 
     // 編集中予想年数
     public static Integer sYosouNenSuu;
@@ -58,8 +61,10 @@ public class StockData {
     // 予想株価 + i
     final static String PRE_YOSOU_KABU_KA = "PRE_YOSOU_KABU_KA_";
 
-    // 一株配当 + i
-    final static String PRE_HITOKABU_HAITOU = "PRE_HITOKABU_HAITOU_";
+    // 一株配当 整数部分 + i
+    final static String PRE_HITOKABU_HAITOU1 = "PRE_HITOKABU_HAITOU1_";
+    // 一株配当 小数点部分 + i
+    final static String PRE_HITOKABU_HAITOU2 = "PRE_HITOKABU_HAITOU2_";
     // 予想年数 + i
     final static String PRE_YOSOU_NEN_SUU = "PRE_YOSOU_NEN_SUU_";
 
@@ -71,7 +76,7 @@ public class StockData {
 
 
 
-    public static void InitStockData(Context context, EditText EditMeigara,EditText EditShutokuKabuKa,EditText EditShutokuKabuSuu,EditText EditHitokabuHaitou){
+    public static void InitStockData(Context context, EditText EditMeigara,EditText EditShutokuKabuKa,EditText EditShutokuKabuSuu,EditText EditHitokabuHaitou1,EditText EditHitokabuHaitou2){
         mContext = context;
 
         sSaveNum = GetPreUsingNum(); //　登録数
@@ -91,18 +96,21 @@ public class StockData {
         Integer buf_sYosouKabuKa = StockData.GetPreYosouKabuKa(sUsingNo);
         sShutokuKingaku = (long)sShutokuKabuKa * (long)sShutokuKabuSuu;
 
-        sHitokabuHaitou = StockData.GetPreHitokabuHaitou(sUsingNo);
+        sHitokabuHaitou1 = StockData.GetPreHitokabuHaitou1(sUsingNo);
+        sHitokabuHaitou2 = StockData.GetPreHitokabuHaitou2(sUsingNo);
         sYosouNenSuu = StockData.GetPreYosouNenSuu(sUsingNo);
 
-        Log.w( "DEBUG_DATA", "sHitokabuHaitou " + sHitokabuHaitou);
+        Log.w( "DEBUG_DATA", "sHitokabuHaitou " + sHitokabuHaitou1);
 
         EditMeigara.setText(sMeigara);
         if(sShutokuKabuKa != 0) EditShutokuKabuKa.setText(sShutokuKabuKa.toString()); // ◇2初回登録、変更時に予想株価、ピッカーも変更されてしまう。
         else EditShutokuKabuKa.setText("");
         if(sShutokuKabuSuu != 0) EditShutokuKabuSuu.setText(sShutokuKabuSuu.toString());
         else EditShutokuKabuSuu.setText("");
-        if(sHitokabuHaitou != 0) EditHitokabuHaitou.setText(sHitokabuHaitou.toString());
-        else EditHitokabuHaitou.setText("");
+        if(sHitokabuHaitou1 != 0) EditHitokabuHaitou1.setText(sHitokabuHaitou1.toString());
+        else EditHitokabuHaitou1.setText("");
+        if(sHitokabuHaitou2 != 0) EditHitokabuHaitou2.setText(sHitokabuHaitou2.toString());
+        else EditHitokabuHaitou2.setText("");
 
         // ◇2そのため保存しておいた予想損益で上書き
         if(buf_sYosouKabuKa != 0) {
@@ -173,14 +181,27 @@ public class StockData {
     }
 
     /*****
-     * 番号を指定して一株配当を取得
+     * 番号を指定して一株配当 整数部分を取得
      * @param no 銘柄番号(0～)
      */
-    public static Integer GetPreHitokabuHaitou(int no){
-        String key = PRE_HITOKABU_HAITOU + no;
+    public static Integer GetPreHitokabuHaitou1(int no){
+        String key = PRE_HITOKABU_HAITOU1 + no;
         Integer haitou = CommonMng.getPrefInt(mContext,key);
+        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy GetPreHitokabuHaitou1 haitou " + haitou);
         return haitou;
     }
+
+    /*****
+     * 番号を指定して一株配当 小数点部分を取得
+     * @param no 銘柄番号(0～)
+     */
+    public static Integer GetPreHitokabuHaitou2(int no){
+        String key = PRE_HITOKABU_HAITOU2 + no;
+        Integer haitou = CommonMng.getPrefInt(mContext,key);
+        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy GetPreHitokabuHaitou2 haitou " + haitou);
+        return haitou;
+    }
+
     /*****
      * 番号を指定して予想年数を取得
      * @param no 銘柄番号(0～)
@@ -310,21 +331,33 @@ public class StockData {
         sYosouKabuKa = price;
     }
 
+    /*****
+     * 編集中の一株配当を変数とプリファランスに保存
+     * @param haitou 配当
+     */
+    public static void SetHitokabuHaitou1(int haitou){
+        String key = PRE_HITOKABU_HAITOU1 + sUsingNo;
+        CommonMng.setPrefInt(mContext,key,haitou);
+
+        sHitokabuHaitou1 = haitou;
+        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy SetHitokabuHaitou1 haitou " + haitou);
+        Log.w( "DEBUG_DATA", "sHitokabuHaitou SET " + sHitokabuHaitou1);
+    }
 
     /*****
      * 編集中の一株配当を変数とプリファランスに保存
      * @param haitou 配当
      */
-    public static void SetHitokabuHaitou(int haitou){
-        String key = PRE_HITOKABU_HAITOU + sUsingNo;
+    public static void SetHitokabuHaitou2(int haitou){
+        String key = PRE_HITOKABU_HAITOU2 + sUsingNo;
         CommonMng.setPrefInt(mContext,key,haitou);
 
+        sHitokabuHaitou2 = haitou;
 
-
-        sHitokabuHaitou = haitou;
-
-        Log.w( "DEBUG_DATA", "sHitokabuHaitou SET " + sHitokabuHaitou);
+        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy SetHitokabuHaitou2 haitou " + haitou);
+        Log.w( "DEBUG_DATA", "sHitokabuHaitou SET " + sHitokabuHaitou2);
     }
+
     /*****
      * 編集中の予想年数を変数とプリファランスに保存
      * @param num 年数
