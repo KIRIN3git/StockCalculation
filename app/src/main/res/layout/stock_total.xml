@@ -27,7 +27,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="合計損益"/>
+                android:text="@string/goukei_soneki"/>
             <TextView
                 android:id="@+id/textYosouSonekiT"
                 android:gravity="center"
@@ -49,7 +49,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="合計金額"/>
+                android:text="@string/goukei_kingaku"/>
             <TextView
                 android:id="@+id/textYosouKingakuT"
                 android:gravity="center"
@@ -71,7 +71,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="合計源徴"/>
+                android:text="@string/goukei_gencyou"/>
             <TextView
                 android:id="@+id/textYosouGencyouT"
                 android:gravity="center"

@@ -45,7 +45,7 @@
                         android:layout_weight="1"
                         android:gravity="center">
                         <TextView
-                            android:text="予想株価"
+                            android:text="@string/yosou_kabuka"
                             android:layout_gravity="center"
                             android:textSize="20sp"
                             android:layout_width="wrap_content"
@@ -59,8 +59,8 @@
                         android:layout_marginRight="10dp"
                         android:gravity="right">
                         <TextView
-                            android:id="@+id/textReset"
-                            android:text="RESET"
+                            android:id="@+id/textReset1"
+                            android:text="@string/reset"
                             android:textStyle="bold"
                             android:gravity="center"
                             android:textSize="14sp"
@@ -68,7 +68,6 @@
                             android:background="@color/pGreen"
                             android:layout_width="60dp"
                             android:layout_height="40dp" />
-
                     </LinearLayout>
                 </LinearLayout>
 
@@ -151,7 +150,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="譲渡損益"/>
+                android:text="@string/jyouto_soneki"/>
             <TextView
                 android:id="@+id/textYosouSonekiP"
                 android:gravity="center"
@@ -173,7 +172,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="譲渡金額"/>
+                android:text="@string/jyouto_kingaku"/>
             <TextView
                 android:id="@+id/textYosouKingakuP"
                 android:gravity="center"
@@ -195,7 +194,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="譲渡源徴"/>
+                android:text="@string/jyouto_gencyou"/>
             <TextView
                 android:id="@+id/textYosouGencyouP"
                 android:gravity="center"

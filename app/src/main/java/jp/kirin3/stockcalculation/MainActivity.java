@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private static Context mContext;
 
     private static LinearLayout mLlScroll;
-    private static TextView mTextAdd,mTextReset;
+    private static TextView mTextAdd,mTextReset1,mTextReset2;
     private static EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
     private static EditText mEditHitokabuHaitou1,mEditHitokabuHaitou2;
     private static TextView mTextShutokuKingaku;
@@ -59,7 +58,8 @@ public class MainActivity extends AppCompatActivity {
         mLlScroll = (LinearLayout) findViewById(R.id.llScroll);
 
         mTextAdd = (TextView) findViewById(R.id.textNew);
-        mTextReset = (TextView) findViewById(R.id.textReset);
+        mTextReset1 = (TextView) findViewById(R.id.textReset1);
+        mTextReset2 = (TextView) findViewById(R.id.textReset2);
 
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
@@ -109,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v){
 
                 if( StockData.sSaveNum == StockData.SAVE_MAX_NUM ){
-                    Toast.makeText(mContext,"登録最大数になりました",Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, R.string.over_save_num,Toast.LENGTH_LONG).show();
 
                     return;
                 }
@@ -122,12 +122,12 @@ public class MainActivity extends AppCompatActivity {
                 StockData.SetPreMeigara(no-1,meigara);
                 HeaderSetText();
 
-                Toast.makeText(mContext,"銘柄を追加しました",Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext,R.string.add_meigara,Toast.LENGTH_LONG).show();
             }
         });
 
         // 入力データリセットボタン
-        mTextReset.setOnClickListener(new View.OnClickListener(){
+        mTextReset1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
                 // 予想株価を取得株価にリセット
@@ -135,7 +135,18 @@ public class MainActivity extends AppCompatActivity {
                 setNumPickerKabuKa(StockData.sYosouKabuKa);
                 setYosouAll();
 
-                Toast.makeText(mContext,"ピッカーをリセットしました",Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext,R.string.reset_yosou_kabuka,Toast.LENGTH_LONG).show();
+            }
+        });
+        mTextReset2.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                // 予想年数を0にリセット
+                StockData.sYosouNenSuu = 0;
+                setNumPickerNenSuu(StockData.sYosouNenSuu);
+                setYosouAll();
+
+                Toast.makeText(mContext,R.string.reset_yosou_nensuu,Toast.LENGTH_LONG).show();
             }
         });
 
@@ -178,9 +189,6 @@ public class MainActivity extends AppCompatActivity {
             Integer kabuKa = StockData.GetPreShutokuKabuKa(i);
             Integer kabuSuu = StockData.GetPreShutokuKabuSuu(i);
 
-            Log.w( "DEBUG_DATA", "aaa get i "+ i);
-            Log.w( "DEBUG_DATA", "aaa get meigara "+ meigara);
-
             TextView tv = new TextView(mContext);
             tv = new TextView(mContext);
             tv.setId(i);
@@ -217,10 +225,6 @@ public class MainActivity extends AppCompatActivity {
                     Integer hitokabuHaitou1 = StockData.GetPreHitokabuHaitou1(no);
                     Integer hitokabuHaitou2 = StockData.GetPreHitokabuHaitou2(no);
                     Integer yosouNenSuu = StockData.GetPreYosouNenSuu(no);
-
-                    Log.w( "DEBUG_DATA", "HeaderSetText v.getId() = " + v.getId());
-                    Log.w( "DEBUG_DATA", "HeaderSetText meigara = " + meigara);
-                    Log.w( "DEBUG_DATA", "HeaderSetText yosouKabuka = " + buf_yosouKabuKa);
 
                     mEditMeigara.setText(meigara);
                     if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // ◇1初回登録、変更時に予想株価、ピッカーも変更されてしまう。
@@ -358,11 +362,11 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setYosouAll(){
 
-        Log.w( "DEBUG_DATA", "setYosouAll" );
-
         long yosouSonekiP,yosouKingakuP,yosouGencyouP;
         long yosouSonekiD,yosouKingakuD,yosouGencyouD;
         long yosouSonekiT,yosouKingakuT,yosouGencyouT;
+        BigDecimal bd;
+        double buf;
 
         /*
         // 株価を入力していなければ表示しない
@@ -375,13 +379,13 @@ public class MainActivity extends AppCompatActivity {
         }
         */
 
-        Log.w( "DEBUG_DATA", "StockData.sYosouKabuKa" + StockData.sYosouKabuKa);
-        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuKa" + StockData.sShutokuKabuKa);
-        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
-
         yosouSonekiP = ( (long)StockData.sYosouKabuKa - (long)StockData.sShutokuKabuKa ) * (long)StockData.sShutokuKabuSuu;
         yosouKingakuP = (long)StockData.sYosouKabuKa * (long)StockData.sShutokuKabuSuu;
-        yosouGencyouP = yosouSonekiP * 20 / 100;
+        buf = (double)yosouSonekiP * StockData.ZEIRITSU / 100.0;
+        bd = new BigDecimal(buf);
+        bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
+        yosouGencyouP = (long)bd.doubleValue();
+
         if(yosouGencyouP < 0) yosouGencyouP = 0;
 
         mTextYosouSonekiP.setText(costString(yosouSonekiP));
@@ -402,23 +406,18 @@ public class MainActivity extends AppCompatActivity {
                 waru = 100.0;
             }
 
-            double buf = (double)StockData.sHitokabuHaitou2  * (double)StockData.sYosouNenSuu * (double)StockData.sShutokuKabuSuu / waru;
-            BigDecimal bd = new BigDecimal(buf);
+            buf = (double)StockData.sHitokabuHaitou2  * (double)StockData.sYosouNenSuu * (double)StockData.sShutokuKabuSuu / waru;
+            bd = new BigDecimal(buf);
             bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
-            double buf2 = bd.doubleValue();
 
-            yosouSonekiD += buf2;
-            Log.w( "DEBUG_DATA", "wwwwwww buf " + buf);
-            Log.w( "DEBUG_DATA", "wwwwwww buf2 " + buf2);
-            Log.w( "DEBUG_DATA", "wwwwwww yosouSonekiD " + yosouSonekiD);
+            yosouSonekiD += bd.doubleValue();
         }
 
         yosouKingakuD = StockData.sShutokuKingaku + yosouSonekiD;
-        yosouGencyouD = yosouSonekiD * 20 / 100;
-
-        Log.w( "DEBUG_DATA", "eeeee StockData.sHitokabuHaitou1 " + StockData.sHitokabuHaitou1);
-        Log.w( "DEBUG_DATA", "eeeee StockData.sYosouNenSuu " + StockData.sYosouNenSuu);
-        Log.w( "DEBUG_DATA", "eeeee StockData.sShutokuKabuSuu " + StockData.sShutokuKabuSuu);
+        buf = (double)yosouSonekiD * StockData.ZEIRITSU / 100.0;
+        bd = new BigDecimal(buf);
+        bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
+        yosouGencyouD = (long)bd.doubleValue();
 
         mTextYosouSonekiD.setText(costString(yosouSonekiD));
         if(yosouSonekiP == 0) mTextYosouSonekiD.setTextColor(getResources().getColor(R.color.gray));
@@ -428,7 +427,13 @@ public class MainActivity extends AppCompatActivity {
 
         yosouSonekiT = yosouSonekiP + yosouSonekiD;
         yosouKingakuT = StockData.sShutokuKingaku + yosouSonekiT;
-        yosouGencyouT = yosouSonekiT * 20 /100;
+
+        buf = (double)yosouSonekiT * StockData.ZEIRITSU / 100.0;
+        bd = new BigDecimal(buf);
+        bd = bd.setScale(0, BigDecimal.ROUND_HALF_UP);
+        yosouGencyouT = (long)bd.doubleValue();
+
+
         if(yosouGencyouT < 0) yosouGencyouT = 0;
 
         mTextYosouSonekiT.setText(costString(yosouSonekiT));
@@ -446,8 +451,6 @@ public class MainActivity extends AppCompatActivity {
     public void setShutokuKingaku(){
 
         if( StockData.sShutokuKabuKa == null || StockData.sShutokuKabuSuu == null ) return;
-        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuKa" + StockData.sShutokuKabuKa);
-        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
         StockData.sShutokuKingaku = (long)StockData.sShutokuKabuKa * (long)StockData.sShutokuKabuSuu;
         mTextShutokuKingaku.setText(costString(StockData.sShutokuKingaku));
     }
@@ -460,7 +463,6 @@ public class MainActivity extends AppCompatActivity {
      */
     public static void setNumPickerKabuKa(int KabuKa){
 
-        Log.w( "DEBUG_DATA", "setNumPickerKabuKaaaaaaaaaaaaaaaaaaaaaaaaaaaaa KabuKa " + KabuKa);
         int KabuKaBuf;
         int num1 = 0,num2 = 0,num3 = 0,num4 = 0,num5 = 0;
 
@@ -496,12 +498,6 @@ public class MainActivity extends AppCompatActivity {
             num1 = KabuKaBuf / 1;
             KabuKaBuf = KabuKaBuf - ( num1 * 1 );
         }
-
-        Log.w( "DEBUG_DATA", "num5 = " + num5 );
-        Log.w( "DEBUG_DATA", "num4 = " + num4 );
-        Log.w( "DEBUG_DATA", "num3 = " + num3 );
-        Log.w( "DEBUG_DATA", "num2 = " + num2 );
-        Log.w( "DEBUG_DATA", "num1 = " + num1 );
 
         mNumPickerKabuKa5.setValue(num5);
         mNumPickerKabuKa4.setValue(num4);
@@ -541,14 +537,12 @@ public class MainActivity extends AppCompatActivity {
 
             switch (view.getId()) {
                 case R.id.editMeigara:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editMeigara" );
                     // 1文字入力ごとにデータを保管
                     StockData.SetMeigara(mEditMeigara.getText().toString());
                     HeaderSetText();
 
                     break;
                 case R.id.editShutokuKabuKa:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuKa" );
                     if( mEditShutokuKabuKa.getText().toString() !=null && mEditShutokuKabuKa.getText().toString().length() > 0 ) {
                         int shutokuKabuka = Integer.parseInt(mEditShutokuKabuKa.getText().toString());
 
@@ -557,7 +551,7 @@ public class MainActivity extends AppCompatActivity {
                             mEditShutokuKabuKa.setText(String.valueOf(shutokuKabuka));
                             // 取得株価のリアルタイム保存
                             StockData.SetShutokuKabuKa(shutokuKabuka);
-                            showAlert("オーバーフロー","株価は99999まで設定可能です",mContext );
+                            showAlert(getString(R.string.over_flow),getString(R.string.over_kabuka),mContext );
                             break;
                         }
 
@@ -578,15 +572,13 @@ public class MainActivity extends AppCompatActivity {
                     setShutokuKingaku();
                     break;
                 case R.id.editShutokuKabuSuu:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editShutokuKabuSuu" );
                     if( mEditShutokuKabuSuu.getText().toString() !=null && mEditShutokuKabuSuu.getText().toString().length() > 0 ) {
                         int shutokuKabusuu = Integer.parseInt(mEditShutokuKabuSuu.getText().toString());
 
-                        Log.w( "DEBUG_DATA", "StockData.sShutokuKabuSuu" + StockData.sShutokuKabuSuu);
                         if(shutokuKabusuu > 10000000){
                             shutokuKabusuu = 9999999;
                             mEditShutokuKabuSuu.setText(String.valueOf(shutokuKabusuu));
-                            showAlert("オーバーフロー","株数は9999999まで設定可能です",mContext);
+                            showAlert(getString(R.string.over_flow),getString(R.string.over_kabusuu),mContext);
                             break;
                         }
 
@@ -600,14 +592,13 @@ public class MainActivity extends AppCompatActivity {
                     break;
 
                 case R.id.editHitokabuHaitou1:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editHitokabuHaitou1" );
                     if( mEditHitokabuHaitou1.getText().toString() !=null && mEditHitokabuHaitou1.getText().toString().length() > 0 ) {
                         int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou1.getText().toString());
 
                         if(hitokabuHaitou > 10000){
                             hitokabuHaitou = 9999;
                             mEditHitokabuHaitou1.setText(String.valueOf(hitokabuHaitou));
-                            showAlert("オーバーフロー","一株配当は9999まで設定可能です",mContext );
+                            showAlert(getString(R.string.over_flow),getString(R.string.over_haitou1),mContext );
                             break;
                         }
 
@@ -623,14 +614,13 @@ public class MainActivity extends AppCompatActivity {
 
                     break;
                 case R.id.editHitokabuHaitou2:
-                    Log.w( "DEBUG_DATA", "afterTextChanged editHitokabuHaitou2" );
                     if( mEditHitokabuHaitou2.getText().toString() !=null && mEditHitokabuHaitou2.getText().toString().length() > 0 ) {
                         int hitokabuHaitou = Integer.parseInt(mEditHitokabuHaitou2.getText().toString());
 
                         if(hitokabuHaitou > 100){
                             hitokabuHaitou = 99;
                             mEditHitokabuHaitou2.setText(String.valueOf(hitokabuHaitou));
-                            showAlert("オーバーフロー","99まで設定可能です",mContext );
+                            showAlert(getString(R.string.over_flow),getString(R.string.over_haitou2),mContext );
                             break;
                         }
 

@@ -1,6 +1,35 @@
 <resources>
-    <string name="app_name">StockCalculation</string>
+    <string name="app_name">損益計算</string>
     <string name="admob_app_id">ca-app-pub-1057765466901496~2773577276</string>
     <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_ad_unit_id_main">ca-app-pub-1057765466901496/9670868552</string>
+    <string name="over_save_num">登録最大数になりました</string>
+    <string name="add_meigara">銘柄を追加しました</string>
+    <string name="reset_yosou_kabuka">予想株価をリセットしました</string>
+    <string name="reset_yosou_nensuu">予想年数をリセットしました</string>
+    <string name="over_flow">オーバーフロー</string>
+    <string name="over_kabuka">株価は99999まで設定可能です</string>
+    <string name="over_kabusuu">株数は9999999まで設定可能です</string>
+    <string name="over_haitou1">一株配当は9999まで設定可能です</string>
+    <string name="over_haitou2">99まで設定可能です</string>
+    <string name="add">ADD</string>
+    <string name="meigara">　銘柄　</string>
+    <string name="zeiritsu">　税率　</string>
+    <string name="zeiritsu_persent">20.315%</string>
+    <string name="shutoku_kabuka">取得株価</string>
+    <string name="shutoku_kabusuu">取得株数</string>
+    <string name="hitokabu_haitou">一株配当</string>
+    <string name="shutoku_kingaku">取得金額</string>
+    <string name="yosou_kabuka">予想株価</string>
+    <string name="reset">RESET</string>
+    <string name="jyouto_soneki">譲渡損益</string>
+    <string name="jyouto_kingaku">譲渡金額</string>
+    <string name="jyouto_gencyou">譲渡源徴</string>
+    <string name="yosou_nensuu">予想年数</string>
+    <string name="haitou_soneki">配当損益</string>
+    <string name="haitou_kingaku">配当金額</string>
+    <string name="haitou_gencyou">配当源徴</string>
+    <string name="goukei_soneki">合計損益</string>
+    <string name="goukei_kingaku">合計金額</string>
+    <string name="goukei_gencyou">合計源徴</string>
 </resources>

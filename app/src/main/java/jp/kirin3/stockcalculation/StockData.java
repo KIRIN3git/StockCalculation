@@ -43,6 +43,10 @@ public class StockData {
 
     // 最大銘柄登録数
     final static int SAVE_MAX_NUM = 20;
+
+    // 税率
+    final static double ZEIRITSU = 20.315;
+
     // ユーザーの登録銘柄数
     public static Integer sSaveNum = 0;
     // 編集中銘柄番号
@@ -99,8 +103,6 @@ public class StockData {
         sHitokabuHaitou1 = StockData.GetPreHitokabuHaitou1(sUsingNo);
         sHitokabuHaitou2 = StockData.GetPreHitokabuHaitou2(sUsingNo);
         sYosouNenSuu = StockData.GetPreYosouNenSuu(sUsingNo);
-
-        Log.w( "DEBUG_DATA", "sHitokabuHaitou " + sHitokabuHaitou1);
 
         EditMeigara.setText(sMeigara);
         if(sShutokuKabuKa != 0) EditShutokuKabuKa.setText(sShutokuKabuKa.toString()); // ◇2初回登録、変更時に予想株価、ピッカーも変更されてしまう。
@@ -187,7 +189,6 @@ public class StockData {
     public static Integer GetPreHitokabuHaitou1(int no){
         String key = PRE_HITOKABU_HAITOU1 + no;
         Integer haitou = CommonMng.getPrefInt(mContext,key);
-        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy GetPreHitokabuHaitou1 haitou " + haitou);
         return haitou;
     }
 
@@ -198,7 +199,6 @@ public class StockData {
     public static Integer GetPreHitokabuHaitou2(int no){
         String key = PRE_HITOKABU_HAITOU2 + no;
         Integer haitou = CommonMng.getPrefInt(mContext,key);
-        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy GetPreHitokabuHaitou2 haitou " + haitou);
         return haitou;
     }
 
@@ -288,9 +288,7 @@ public class StockData {
         String key = PRE_MEIGARA + sUsingNo;
         CommonMng.setPrefString(mContext,key,data);
         sMeigara = data;
-        
-        Log.w( "DEBUG_DATA", "key " + key);
-        Log.w( "DEBUG_DATA", "data " + data);
+
     }
 
     /*****
@@ -302,9 +300,6 @@ public class StockData {
         CommonMng.setPrefInt(mContext,key,price);
 
         sShutokuKabuKa = price;
-
-        Log.w( "DEBUG_DATA", "key " + key);
-        Log.w( "DEBUG_DATA", "data " + price);
     }
 
     /*****
@@ -316,8 +311,6 @@ public class StockData {
         CommonMng.setPrefInt(mContext,key,num);
 
         sShutokuKabuSuu = num;
-        Log.w( "DEBUG_DATA", "key " + key);
-        Log.w( "DEBUG_DATA", "data " + num);
     }
 
     /*****
@@ -340,8 +333,6 @@ public class StockData {
         CommonMng.setPrefInt(mContext,key,haitou);
 
         sHitokabuHaitou1 = haitou;
-        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy SetHitokabuHaitou1 haitou " + haitou);
-        Log.w( "DEBUG_DATA", "sHitokabuHaitou SET " + sHitokabuHaitou1);
     }
 
     /*****
@@ -353,9 +344,6 @@ public class StockData {
         CommonMng.setPrefInt(mContext,key,haitou);
 
         sHitokabuHaitou2 = haitou;
-
-        Log.w( "DEBUG_DATA", "yyyyyyyyyyyyy SetHitokabuHaitou2 haitou " + haitou);
-        Log.w( "DEBUG_DATA", "sHitokabuHaitou SET " + sHitokabuHaitou2);
     }
 
     /*****

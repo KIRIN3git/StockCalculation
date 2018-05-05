@@ -20,7 +20,7 @@
 
             <TextView
                 android:id="@+id/textNew"
-                android:text="ADD"
+                android:text="@string/add"
                 android:textStyle="bold"
                 android:layout_gravity="center"
                 android:gravity="center"

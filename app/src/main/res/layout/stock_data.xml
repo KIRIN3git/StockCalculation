@@ -20,7 +20,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="　銘柄　"/>
+                android:text="@string/meigara"/>
             <EditText
                 android:id="@+id/editMeigara"
                 android:textStyle="bold"
@@ -45,7 +45,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="取得株価"/>
+                android:text="@string/shutoku_kabuka"/>
             <EditText
                 android:id="@+id/editShutokuKabuKa"
                 android:textStyle="bold"
@@ -67,7 +67,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="取得株数"/>
+                android:text="@string/shutoku_kabusuu"/>
             <EditText
                 android:id="@+id/editShutokuKabuSuu"
                 android:textStyle="bold"
@@ -89,7 +89,7 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="一株配当"/>
+                android:text="@string/hitokabu_haitou"/>
             <EditText
                 android:id="@+id/editHitokabuHaitou1"
                 android:textStyle="bold"
@@ -116,6 +116,7 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -128,7 +129,31 @@
                 android:textSize="20sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="取得金額"/>
+                android:text="@string/zeiritsu"/>
+            <TextView
+                android:id="@+id/textZeiritsu"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:gravity="center"
+                android:inputType="number"
+                android:text="@string/zeiritsu_persent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:gravity="center"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/shutoku_kingaku"/>
             <TextView
                 android:id="@+id/textShutokuKingaku"
                 android:textStyle="bold"
@@ -138,8 +163,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
-
-
 
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
