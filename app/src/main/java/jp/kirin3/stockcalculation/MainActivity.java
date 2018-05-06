@@ -1,14 +1,17 @@
 package jp.kirin3.stockcalculation;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
@@ -30,8 +33,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static Context mContext;
 
+    private static ConstraintLayout mClMain;
     private static LinearLayout mLlScroll;
-    private static TextView mTextAdd,mTextReset1,mTextReset2;
+    private static TextView mTextAdd,mTextReset1,mTextReset2,mTextHide,mTextManual;
     private static EditText mEditMeigara, mEditShutokuKabuKa, mEditShutokuKabuSuu;
     private static EditText mEditHitokabuHaitou1,mEditHitokabuHaitou2;
     private static TextView mTextShutokuKingaku;
@@ -40,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private static TextView mTextYosouSonekiT, mTextYosouKingakuT, mTextYosouGencyouT;
     private static CustomNumberPicker mNumPickerKabuKa1,mNumPickerKabuKa2,mNumPickerKabuKa3,mNumPickerKabuKa4,mNumPickerKabuKa5;
     private static CustomNumberPicker mNumPickerNenSuu;
+    // キーボード表示制御のオブジェクト
+    private InputMethodManager inputMethodManager;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -55,11 +61,14 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        mClMain = (ConstraintLayout) findViewById(R.id.layoutMain);
         mLlScroll = (LinearLayout) findViewById(R.id.llScroll);
 
         mTextAdd = (TextView) findViewById(R.id.textNew);
         mTextReset1 = (TextView) findViewById(R.id.textReset1);
         mTextReset2 = (TextView) findViewById(R.id.textReset2);
+        mTextHide = (TextView) findViewById(R.id.textHide);
+        mTextManual = (TextView) findViewById(R.id.textManual);
 
         mEditMeigara = (EditText) findViewById(R.id.editMeigara);
         mEditShutokuKabuKa = (EditText) findViewById(R.id.editShutokuKabuKa);
@@ -100,6 +109,9 @@ public class MainActivity extends AppCompatActivity {
         mTextYosouKingakuT = (TextView) findViewById(R.id.textYosouKingakuT);
         mTextYosouGencyouT = (TextView) findViewById(R.id.textYosouGencyouT);
 
+        //キーボード表示を制御するためのオブジェクト
+        inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+
         // ヘッダーに銘柄を設定
         HeaderSetText();
 
@@ -120,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 int no = StockData.GetPreUsingNum();
                 String meigara = "銘柄" + (no);
                 StockData.SetPreMeigara(no-1,meigara);
+                changeMeigaraData(no-1);
                 HeaderSetText();
 
                 Toast.makeText(mContext,R.string.add_meigara,Toast.LENGTH_LONG).show();
@@ -136,8 +149,12 @@ public class MainActivity extends AppCompatActivity {
                 setYosouAll();
 
                 Toast.makeText(mContext,R.string.reset_yosou_kabuka,Toast.LENGTH_LONG).show();
+
+                //キーボードを隠す
+                inputMethodManager.hideSoftInputFromWindow(mClMain.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             }
         });
+
         mTextReset2.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -150,6 +167,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mTextHide.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                //キーボードを隠す
+                inputMethodManager.hideSoftInputFromWindow(mClMain.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        });
+
+
+        mTextManual.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                // インテントのインスタンス生成
+                Intent intent = new Intent(MainActivity.this, ManualActivity.class);
+                // マニュアル画面起動
+                startActivity(intent);
+            }
+        });
+
+
         getChangeNumberPicker();
 
         ///////////// 〇Firebase
@@ -161,6 +198,8 @@ public class MainActivity extends AppCompatActivity {
         // Event
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+
     }
 
     @Override
@@ -212,40 +251,7 @@ public class MainActivity extends AppCompatActivity {
             tv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String key;
-
-                    StockData.SetUsingNo(v.getId());
-
-                    int no = v.getId();
-
-                    String meigara = StockData.GetPreMeigara(no);
-                    Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
-                    Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
-                    Integer buf_yosouKabuKa = StockData.GetPreYosouKabuKa(no);
-                    Integer hitokabuHaitou1 = StockData.GetPreHitokabuHaitou1(no);
-                    Integer hitokabuHaitou2 = StockData.GetPreHitokabuHaitou2(no);
-                    Integer yosouNenSuu = StockData.GetPreYosouNenSuu(no);
-
-                    mEditMeigara.setText(meigara);
-                    if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // ◇1初回登録、変更時に予想株価、ピッカーも変更されてしまう。
-                    else mEditShutokuKabuKa.setText("");
-                    if(shutokuKabuSuu != 0) mEditShutokuKabuSuu.setText(shutokuKabuSuu.toString());
-                    else mEditShutokuKabuSuu.setText("");
-                    if(hitokabuHaitou1 != 0) mEditHitokabuHaitou1.setText(hitokabuHaitou1.toString());
-                    else mEditHitokabuHaitou1.setText("");
-                    if(hitokabuHaitou2 != 0) mEditHitokabuHaitou2.setText(hitokabuHaitou2.toString());
-                    else mEditHitokabuHaitou2.setText("");
-
-                    // ◇1そのため保存しておいた予想損益で上書き
-                    StockData.SetYosouKabuKa(buf_yosouKabuKa);
-                    setNumPickerKabuKa(buf_yosouKabuKa);
-
-                    StockData.SetYosouNenSuu(yosouNenSuu);
-                    setNumPickerNenSuu(yosouNenSuu);
-
-                    setYosouAll();
-
-                    HeaderSetText();
+                    changeMeigaraData(v.getId());
                 }
             });
             mLlScroll.addView(tv);
@@ -261,6 +267,42 @@ public class MainActivity extends AppCompatActivity {
             }
             */
         }
+    }
+
+    // ユーザーが選択している銘柄データを切り替える
+    public void changeMeigaraData(int no) {
+
+        StockData.SetUsingNo(no);
+
+        String meigara = StockData.GetPreMeigara(no);
+        Integer shutokuKabuKa = StockData.GetPreShutokuKabuKa(no);
+        Integer shutokuKabuSuu = StockData.GetPreShutokuKabuSuu(no);
+        Integer buf_yosouKabuKa = StockData.GetPreYosouKabuKa(no);
+        Integer hitokabuHaitou1 = StockData.GetPreHitokabuHaitou1(no);
+        Integer hitokabuHaitou2 = StockData.GetPreHitokabuHaitou2(no);
+        Integer yosouNenSuu = StockData.GetPreYosouNenSuu(no);
+
+        mEditMeigara.setText(meigara);
+        if(shutokuKabuKa != 0) mEditShutokuKabuKa.setText(shutokuKabuKa.toString()); // ◇1初回登録、変更時に予想株価、ピッカーも変更されてしまう。
+        else mEditShutokuKabuKa.setText("");
+        if(shutokuKabuSuu != 0) mEditShutokuKabuSuu.setText(shutokuKabuSuu.toString());
+        else mEditShutokuKabuSuu.setText("");
+        if(hitokabuHaitou1 != 0) mEditHitokabuHaitou1.setText(hitokabuHaitou1.toString());
+        else mEditHitokabuHaitou1.setText("");
+        if(hitokabuHaitou2 != 0) mEditHitokabuHaitou2.setText(hitokabuHaitou2.toString());
+        else mEditHitokabuHaitou2.setText("");
+
+        // ◇1そのため保存しておいた予想損益で上書き
+        StockData.SetYosouKabuKa(buf_yosouKabuKa);
+        setNumPickerKabuKa(buf_yosouKabuKa);
+
+        StockData.SetYosouNenSuu(yosouNenSuu);
+        setNumPickerNenSuu(yosouNenSuu);
+
+        setYosouAll();
+
+        HeaderSetText();
+
     }
 
     public void getChangeNumberPicker() {

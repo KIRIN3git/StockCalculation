@@ -3,6 +3,7 @@
     <string name="admob_app_id">ca-app-pub-1057765466901496~2773577276</string>
     <string name="banner_ad_unit_id_test">ca-app-pub-3940256099942544/6300978111</string>
     <string name="banner_ad_unit_id_main">ca-app-pub-1057765466901496/9670868552</string>
+    <string name="banner_ad_unit_id_manual">ca-app-pub-1057765466901496/1450834859</string>
     <string name="over_save_num">登録最大数になりました</string>
     <string name="add_meigara">銘柄を追加しました</string>
     <string name="reset_yosou_kabuka">予想株価をリセットしました</string>
@@ -22,6 +23,8 @@
     <string name="shutoku_kingaku">取得金額</string>
     <string name="yosou_kabuka">予想株価</string>
     <string name="reset">RESET</string>
+    <string name="hide">HIDE KEYBORD</string>
+    <string name="manual">MANUAL</string>
     <string name="jyouto_soneki">譲渡損益</string>
     <string name="jyouto_kingaku">譲渡金額</string>
     <string name="jyouto_gencyou">譲渡源徴</string>
